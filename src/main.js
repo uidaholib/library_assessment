@@ -3,20 +3,16 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
-import Vuex from 'vuex';
-import VueLeaflet from './index'
-// import '../node_modules/leaflet/dist/leaflet.css';
+import store from './vuex/store'
 
 Vue.config.productionTip = false
 
-Vue.use(Vuex);
-const store = new Vuex.Store();
-// Vue.use(VueLeaflet.plugin, store);
 
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
   router,
+  store,
   template: '<App/>',
   components: { App }
 })

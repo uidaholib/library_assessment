@@ -40,6 +40,8 @@ module.exports = {
     // allow end of line 
     "eol-last": 0,
     // allow multiple spaces
-    "no-multi-spaces": 0
+    "no-multi-spaces": 0,
+    // allow handle of callback error
+    "handle-callback-err": 0
   }
 }
