@@ -1,6 +1,6 @@
 # library_assessment
 
-> library assessment project for the University of Idaho
+> Library Assessment Project for the University of Idaho
 
 ## Build Setup
 
