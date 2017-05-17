@@ -42,6 +42,12 @@ module.exports = {
     // allow multiple spaces
     "no-multi-spaces": 0,
     // allow handle of callback error
-    "handle-callback-err": 0
+    "handle-callback-err": 0,
+    // allow space-comment
+    "spaced-comment": 0,
+    // allow braces style
+    "brace-style": 0,
+    // allow no useless escape
+    "no-useless-escape": 0
   }
 }

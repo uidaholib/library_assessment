@@ -11,6 +11,7 @@ import esri from 'esri-leaflet';
 export default {
   name: 'home',
   data() {
+    console.log(this.$route.param)
     return {
       msg: 'Welcome to Your Vue.js App',
       map: null
