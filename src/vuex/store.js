@@ -1,13 +1,16 @@
 import Vue from 'vue'
 import Vuex from 'vuex';
-import * as actions from './actions';
-import * as getters from './getters'
-import * as mutations from './mutations'
+import actions from './actions';
+import getters from './getters'
+import mutations from './mutations'
+import auth from '../services/auth'
 
 Vue.use(Vuex);
 
 const state = {
-  isAuthenticated: false
+  isAuthenticated: auth.isLoggedIn(),
+  user: auth.getUserDataToken(),
+  token: auth.getAccessToken()
 };
 
 const store = new Vuex.Store({

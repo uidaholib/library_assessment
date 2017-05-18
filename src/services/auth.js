@@ -50,11 +50,11 @@ function setAccessToken(token) {
 }
 
 function getUserDataToken() {
-  localStorage.getItem(USER_DATA_TOKEN_KEY)
+  return JSON.parse(JSON.parse(localStorage.getItem(USER_DATA_TOKEN_KEY)))
 }
 
 function setUserDataToken(token) {
-  localStorage.setItem(USER_DATA_TOKEN_KEY, token)
+  localStorage.setItem(USER_DATA_TOKEN_KEY, JSON.stringify(token))
 }
 
 function clearUserDataToken() {
@@ -63,12 +63,20 @@ function clearUserDataToken() {
 
 // send a request to the login URL and save the returned JWT
 function login(credentials) {
-  // if (isLoggedIn()) {
-  //   return new Promise((resolve, reject) => {
-  //     resolve(getUserDataToken())
-  //     reject('user is not logged in')
-  //   });
-  // } else {
+  if (isLoggedIn()) {
+    console.log('user is authenticated')
+    return new Promise((resolve, reject) => {
+      const token = getAccessToken()
+      setAccessToken(token)
+      getUserData(token).then(data => {
+        setUserDataToken(JSON.stringify(data.user))
+        return data.user
+      }).catch(error => {
+        reject('user is not logged in\nError:', error)
+      })
+    });
+  } else {
+    console.log('user is not authenticated. Trying authentication')    
     return generateToken(credentials).then(response => {
       setAccessToken(response.token)
       return response.token
@@ -76,12 +84,12 @@ function login(credentials) {
       .then(token => getUserData(token))
       .then(userData => {
         setUserDataToken(JSON.stringify(userData.user))
-        return userData
+        return userData.user
       })
       .catch(error => {
         return new Error('User not logged in!\nError:', error)
       })
-  // }
+  }
 }
 
 function logout() {
@@ -99,12 +107,19 @@ function requireAuth(to, from, next) {
   }
 }
 
-const auth0 = {
+function checkAuth(to, from, next) {
+  clearAccessToken()
+  clearUserDataToken()
+}
+
+export default {
   login,
   logout,
   isLoggedIn,
   requireAuth,
   getAccessToken,
-  getUserDataToken
+  getUserDataToken,
+  setUserDataToken,
+  clearUserDataToken,
+  clearAccessToken
 }
-export default auth0

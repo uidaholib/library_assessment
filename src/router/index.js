@@ -10,7 +10,8 @@ const routes = [
   {
     path: '/',
     name: 'auth',
-    component: Auth
+    component: Auth,
+    beforeEnter: auth.checkAuth
   }, {
     path: '/home',
     name: 'home',

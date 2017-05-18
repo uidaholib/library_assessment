@@ -1,9 +1,9 @@
 <template>
-  <div id='auth' class="container">
+  <div id='auth' class="container jumbotron">
     <h1 class="text-primary">Login to Arcgis Online</h1>
     <form>
       <div class="form-group">
-        <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Email" v-model="username">
+        <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Username" v-model="username">
       </div>
       <div class="form-group">
         <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password" v-model="password">
@@ -14,10 +14,7 @@
 </template>
 
 <script>
-import L from 'leaflet'
-import esri from 'esri-leaflet'
-import router from '../router'
-import auth0 from '../services/auth'
+import auth from '../services/auth'
 
 export default {
   name: 'auth',
@@ -29,13 +26,11 @@ export default {
       password
     }
   },
-  computed: {
-    user() {
-      return { username: this.userame, password: this.password };
-    }
-  },
   methods: {
     login() {
+      console.log('token: ', auth.getAccessToken(), '\nuser: ', auth.getUserDataToken())
+      // const expiration = 20160
+      const expiration = 500
       const credentials = {
         username: this.username,
         password: this.password,
@@ -44,13 +39,12 @@ export default {
         client: 'referer',
         referer: window.location.origin
       }
-      auth0.login(credentials).then(data => {
-        const token = auth0.getAccessToken()
-        console.log('auth user data: ', data)
-        console.log('auth access token: ', token)
-        router.push({ name: 'home', params: { userdata: data, token } })
-      })
+      this.$store.dispatch('login', credentials)
     }
+  },
+  mounted() {
+    auth.clearAccessToken()
+    auth.clearUserDataToken()
   }
 }
 </script>
