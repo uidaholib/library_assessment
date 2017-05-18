@@ -1,9 +1,6 @@
 <template>
   <div id='main-content'>
-    <div class='map-options'></div>
-    <div id='map-container'>
-      <esri-map></esri-map>
-    </div>
+    <esri-map></esri-map>
   </div>
 </template>
 
@@ -54,6 +51,4 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-#map-container {
-}
 </style>
