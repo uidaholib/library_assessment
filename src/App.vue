@@ -1,13 +1,19 @@
 <template>
   <div id="app">
+    <app-navbar></app-navbar>
     <router-view></router-view>
   </div>
 </template>
 
 <script>
 import '../node_modules/leaflet/dist/leaflet.css';
+import NavBar from './components/NavBar';
+
 export default {
-  name: 'app'
+  name: 'app',
+  components: {
+    'app-navbar': NavBar
+  }
 }
 </script>
 
@@ -19,6 +25,5 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
 }
 </style>
