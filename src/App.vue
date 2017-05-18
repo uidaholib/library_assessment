@@ -2,17 +2,20 @@
   <div id="app">
     <app-navbar></app-navbar>
     <router-view></router-view>
+    <app-footer></app-footer>
   </div>
 </template>
 
 <script>
 import '../node_modules/leaflet/dist/leaflet.css';
-import NavBar from './components/NavBar';
+import Navbar from './components/Navbar';
+import Footer from './components/Footer'
 
 export default {
   name: 'app',
   components: {
-    'app-navbar': NavBar
+    'app-navbar': Navbar,
+    'app-footer': Footer
   }
 }
 </script>

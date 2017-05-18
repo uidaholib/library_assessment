@@ -1,6 +1,6 @@
 <template>
   <div id='auth' class="container jumbotron">
-    <h1 class="text-primary">Login to Arcgis Online</h1>
+    <h2 class="text-primary">Login to Arcgis Online</h2>
     <form>
       <div class="form-group">
         <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Username" v-model="username">
@@ -30,7 +30,7 @@ export default {
     login() {
       console.log('token: ', auth.getAccessToken(), '\nuser: ', auth.getUserDataToken())
       // const expiration = 20160
-      const expiration = 500
+      const expiration = 1
       const credentials = {
         username: this.username,
         password: this.password,
@@ -42,13 +42,17 @@ export default {
       this.$store.dispatch('login', credentials)
     }
   },
-  mounted() {
+  beforeCreate() {
     auth.clearAccessToken()
     auth.clearUserDataToken()
+    this.$store.commit('setUser', null)
+    this.$store.commit('setToken', null)
   }
 }
 </script>
 
 <style scoped>
-#auth {}
+#auth {
+  width: 400pt;
+}
 </style>

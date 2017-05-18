@@ -110,6 +110,7 @@ function requireAuth(to, from, next) {
 function checkAuth(to, from, next) {
   clearAccessToken()
   clearUserDataToken()
+  console.log('clear data');
 }
 
 export default {

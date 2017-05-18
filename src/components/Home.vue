@@ -1,11 +1,9 @@
 <template>
-  <div class="home container row">
-    <div class="container">
-      <h2 v-if="!isAuthenticated">You are not logged in</h2>
-      <h2 v-if="isAuthenticated">Welcome {{user.fullName}}</h2>
-      <button class="btn btn-danger" @click.prevent="logout">Logout</button>
+  <div id='main-content'>
+    <div class='map-options'></div>
+    <div id='map-container'>
+      <esri-map></esri-map>
     </div>
-    <esri-map></esri-map>
   </div>
 </template>
 
@@ -56,4 +54,6 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+#map-container {
+}
 </style>
