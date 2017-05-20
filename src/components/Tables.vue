@@ -1,14 +1,12 @@
 <template>
-  <div class="sidebar">
+  <div id='app-table'>
+    <h1>Welcome to tables</h1>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'sidebar',
-  data() {
-    return {}
-  }
+
 }
 </script>
 

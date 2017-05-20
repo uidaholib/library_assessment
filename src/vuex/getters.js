@@ -7,5 +7,9 @@ export default {
   },
   getAuthentication(state) {
     return state.isAuthenticated
+  },
+  getSidebar(state) {
+    console.log('get sidebar: ', state.navigation.sidebar);
+    return state.navigation.sidebar
   }
 }

@@ -10,7 +10,10 @@ Vue.use(Vuex);
 const state = {
   isAuthenticated: auth.isLoggedIn(),
   user: auth.getUserDataToken(),
-  token: auth.getAccessToken()
+  token: auth.getAccessToken(),
+  navigation: {
+    sidebar: false
+  }
 };
 
 const store = new Vuex.Store({

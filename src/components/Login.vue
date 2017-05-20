@@ -1,15 +1,22 @@
 <template>
-  <div id='auth' class="container jumbotron">
-    <h2 class="text-primary">Login to Arcgis Online</h2>
-    <form>
-      <div class="form-group">
-        <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Username" v-model="username">
-      </div>
-      <div class="form-group">
-        <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password" v-model="password">
-      </div>
-      <button type="submit" class="btn btn-primary" @click.prevent="login">Login</button>
-    </form>
+  <div id='login'>
+   <v-card>
+    <v-card-row>
+      <v-card-title>Login to Arcgis Online</v-card-title>
+    </v-card-row>
+    <v-card-row>
+      <v-card-text>
+        <v-container fluid>
+          <v-text-field label="Username" v-model="username" required />
+          <v-text-field label="Password" v-model="password" type="password" required />
+          <small>*indicates required field</small>
+        </v-container>
+      </v-card-text>
+    </v-card-row>
+    <v-card-row actions>
+      <v-btn class="blue--text darken-1" raised @click.native="login">Login</v-btn>
+    </v-card-row>
+  </v-card>
   </div>
 </template>
 
@@ -17,13 +24,23 @@
 import auth from '../services/auth'
 
 export default {
-  name: 'auth',
+  name: 'login',
   data() {
-    let username = ''
-    let password = ''
+    let username
+    let password
     return {
       username,
       password
+    }
+  },
+  computed: {
+    isEntryValid(value) {
+      if (value) {
+        return true
+      }
+      else {
+        return false
+      }
     }
   },
   methods: {

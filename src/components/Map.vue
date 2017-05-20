@@ -52,5 +52,6 @@ export default {
 #map {
   height: 400pt;
   width: 100%;
+  z-index: 1!important;
 }
 </style>

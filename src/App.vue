@@ -1,28 +1,22 @@
 <template>
-  <div id="app">
-    <app-sidebar></app-sidebar>
-    <app-main>
-      <router-view></router-view>
-    </app-main>
+  <div id="app" left-fixed-sidebar>
+    <app-navigation-drawer></app-navigation-drawer>    
   </div>
 </template>
 
 <script>
 import '../node_modules/leaflet/dist/leaflet.css'
-import Sidebar from './components/Sidebar'
-import Main from './components/Main'
+import NavigationDrawer from './components/NavigationDrawer'
 
 export default {
   name: 'app',
   components: {
-    'app-main': Main,
-    'app-sidebar': Sidebar,
+    'app-navigation-drawer': NavigationDrawer
   }
 }
 </script>
 
 <style>
-/*@import "../node_modules/leaflet/dist/leaflet.css";*/
 
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
@@ -30,5 +24,7 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+  width: 100%;
+  height: 100%;
 }
 </style>

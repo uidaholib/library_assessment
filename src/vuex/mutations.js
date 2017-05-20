@@ -13,5 +13,8 @@ export default {
   },
   setUser(state, user) {
     state.user = user
+  },
+  toggleSidebar(state) {
+    state.navigation.sidebar = !state.navigation.sidebar
   }
 }
