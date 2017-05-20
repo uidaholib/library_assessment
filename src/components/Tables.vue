@@ -1,6 +1,6 @@
 <template>
   <div id='app-table'>
-    <h1>Welcome to tables</h1>
+    <h4>Welcome to tables</h4>
   </div>
 </template>
 

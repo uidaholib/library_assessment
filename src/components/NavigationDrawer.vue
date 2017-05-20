@@ -35,9 +35,9 @@
       </v-sidebar>
       <v-content>
         <v-container>
-          <v-slide-y-transition mode="out-in">
+          <v-scale-transition mode="out-in" origin="center center">
             <router-view></router-view>
-          </v-slide-y-transition>
+          </v-scale-transition>
         </v-container>
       </v-content>
     </main>

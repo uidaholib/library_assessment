@@ -14,7 +14,7 @@
       </v-card-text>
     </v-card-row>
     <v-card-row actions>
-      <v-btn class="blue--text darken-1" raised @click.native="login">Login</v-btn>
+      <v-btn class="white--text blue darken-3" raised @click.native="login">Login</v-btn>
     </v-card-row>
   </v-card>
   </div>

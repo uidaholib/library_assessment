@@ -23,7 +23,7 @@ export default {
   },
   watch: {
     token(value) {
-      mapLayers.spaceAssessmentFeatureLayer(value, this.map)
+      mapLayers.spaceAssessmentFeatureLayer(value, this.floorLvl.charAt(), this.map)
       mapLayers.floorPlansBasemap(value, this.floorLvl, this.map)
     }
   },
@@ -42,7 +42,7 @@ export default {
   mounted() {
     this.map = L.map('map').setView([46.7274, -117.0144], 19);
     esri.basemapLayer('Topographic').addTo(this.map);
-    mapLayers.spaceAssessmentFeatureLayer(this.token, this.map)
+    mapLayers.spaceAssessmentFeatureLayer(this.token, this.floorLvl.charAt(), this.map)
     mapLayers.floorPlansBasemap(this.token, this.floorLvl, this.map)
   }
 }
