@@ -1,6 +1,6 @@
 <template>
   <div id='login'>
-   <v-card>
+   <v-card class="grey lighten-4 elevation-2">
     <v-card-row>
       <v-card-title>Login to Arcgis Online</v-card-title>
     </v-card-row>
