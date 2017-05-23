@@ -23,5 +23,8 @@ export default {
   },
   getDataTable(state) {
     return state.datatable
+  },
+  getMapDialog(state) {
+    return state.navigation.mapDialog
   }
 }

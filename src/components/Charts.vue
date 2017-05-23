@@ -1,6 +1,6 @@
 <template>
   <div id="charts">
-    <h4>Welcome to charts</h4>
+    <h4>Charts</h4>
   </div>
 </template>
 

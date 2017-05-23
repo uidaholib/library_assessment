@@ -16,7 +16,8 @@ const state = {
   user: auth.getUserDataToken(),
   token: token,
   navigation: {
-    sidebar: false
+    sidebar: false,
+    mapDialog: false,
   },
   map: {
     floor: 1,
@@ -26,7 +27,7 @@ const state = {
   datatable: {
     title: '',
     headers: [],
-    data: []
+    items: []
   }
 };
 

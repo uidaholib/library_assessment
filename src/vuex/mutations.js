@@ -42,5 +42,8 @@ export default {
     state.datatable.title = payload.title
     state.datatable.headers = payload.headers
     state.datatable.items = payload.items
+  },
+  openMapDialog(state, payload) {
+    state.navigation.mapDialog = payload
   }
 }

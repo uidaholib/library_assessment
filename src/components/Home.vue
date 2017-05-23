@@ -1,14 +1,20 @@
 <template>
-  <div id='main-content'>
-    <esri-map></esri-map>
-  </div>
+  <v-layout row wrap>
+    <v-flex xs12>
+      <app-map></app-map>
+      <app-table></app-table>
+      <app-chart></app-chart>
+    </v-flex>
+  </v-layout>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
 import router from '../router'
 import auth from '../services/auth'
-import map from './Map'
+import Map from './Map'
+import Table from './Tables'
+import Chart from './Charts'
 
 export default {
   name: 'home',
@@ -21,7 +27,7 @@ export default {
   computed: {
     ...mapGetters({
       getUser: 'getUser',
-      isAuthenticated: 'getAuthentication'
+      isAuthenticated: 'getAuthentication',
     })
   },
   watch: {
@@ -44,11 +50,14 @@ export default {
     console.log('user: ', this.user)
   },
   components: {
-    'esri-map': map
+    'app-map': Map,
+    'app-table': Table,
+    'app-chart': Chart
   }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+
 </style>
