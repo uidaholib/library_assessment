@@ -5,18 +5,20 @@
       <v-spacer></v-spacer>
       <v-text-field append-icon="search" label="Search" single-line hide-details v-model="search"></v-text-field>
     </v-card-title>
-    <v-data-table v-bind:headers="headers" v-bind:items="items" v-bind:search="search" hide-actions>
-      <template slot="headers" scope="props">
-        <span v-tooltip:bottom="{ 'html': props.item.text }">
-          {{ props.item.text }}
-        </span>
-      </template>
-      <template slot="items" scope="props">
-        <td class="text-xs-left">{{ props.item.date }}</td>
-        <td class="text-xs-right">{{ props.item.use }}</td>
-        <td class="text-xs-right">{{ props.item.numberOfUsers }}</td>
-      </template>
-    </v-data-table>
+    <v-card-row>
+        <v-data-table v-bind:headers="headers" v-bind:items="items" v-bind:search="search">
+          <template slot="headers" scope="props">
+            <span v-tooltip:bottom="{ 'html': props.item.text }">
+              {{ props.item.text }}
+            </span>
+          </template>
+          <template slot="items" scope="props">
+            <td class="text-xs-left">{{ props.item.date }}</td>
+            <td class="text-xs-right">{{ props.item.use }}</td>
+            <td class="text-xs-right">{{ props.item.numberOfUsers }}</td>
+          </template>
+        </v-data-table>
+    </v-card-row>
   </v-card>
 </template>
 
