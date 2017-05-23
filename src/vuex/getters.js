@@ -20,5 +20,8 @@ export default {
   },
   getFeatureLayer(state, id) {
     return state.map.featureLayers.find(featureLayer => featureLayer.id === id)
+  },
+  getDataTable(state) {
+    return state.datatable
   }
 }

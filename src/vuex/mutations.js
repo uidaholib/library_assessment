@@ -37,5 +37,10 @@ export default {
       .map
       .basemaps
       .push({id: payload.id, title: payload.title, basemap: basemap})
+  },
+  setDataTable(state, payload) {
+    state.datatable.title = payload.title
+    state.datatable.headers = payload.headers
+    state.datatable.items = payload.items
   }
 }

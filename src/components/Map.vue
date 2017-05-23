@@ -26,8 +26,11 @@
       <v-card-row height="400px" width="100%" id="map" class="pa-0 ma-0">
       </v-card-row>
       <v-card-row height="50px" class="grey pa-1">
-        <span class="white--text" v-text="selectedFloor ? selectedFloor : '1st Floor'"></span>
-        <span class="white--text pl-1" v-text="building"></span>
+        <h6 class="indigo--text" v-text="selectedFloor ? selectedFloor : '1st Floor'"></h6>
+        <h6 class="indigo--text pl-1" v-text="building"></h6>
+        <v-spacer></v-spacer>
+        <v-btn class="indigo--text">See Data Table</v-btn>
+        <v-btn class="indigo--text">See Chart</v-btn>
       </v-card-row>
     </v-card-text>
     <!--<v-divider></v-divider>-->
@@ -65,7 +68,8 @@ import L from 'leaflet'
 import esri from 'esri-leaflet'
 import moment from 'moment'
 import { mapGetters } from 'vuex'
-import query from '../services/EsriLeafletRelated.js'
+import query from '../libs/EsriLeafletRelated.js'
+import tableHelpers from '../libs/table-helpers.js'
 
 export default {
   name: 'map',
@@ -144,12 +148,26 @@ export default {
       this.setFloorPlansBasemap(tokenValue, 19, 16, floor)
     },
     queryRelatedField(event) {
+      const building = tableHelpers.buildingNameFormatter(event.layer.feature.properties.BldgName)
       console.log('event: ', event)
+      console.log('building: ', building)
       const dStart = moment.utc().subtract(1, 'months').startOf('month').format()
       const dEnd = moment.utc().subtract(1, 'months').endOf('month').format()
       const expr = "EditDate between '" + dStart + "' AND '" + dEnd + "'"
       query(this.spaceAssessmentFeatureLayer).objectIds([event.layer.feature.id]).relationshipId('0').definitionExpression(expr).run((error, response, raw) => {
-        console.log('response: ', response)
+        const items = tableHelpers.getItemsFromQuery(response)
+        const title = building + ' Building Usage Data'
+        const headers = [
+          {
+            text: 'Collection Date',
+            left: true,
+            sortable: true,
+            value: 'date'
+          },
+          { text: 'Type of Use', value: 'use' },
+          { text: 'Number of Users', value: 'numberOfUsers' }
+        ]
+        this.$store.commit('setDataTable', { title, headers, items })
       })
     }
   },

@@ -22,6 +22,11 @@ const state = {
     floor: 1,
     featureLayers: [],
     basemaps: []
+  },
+  datatable: {
+    title: '',
+    headers: [],
+    data: []
   }
 };
 

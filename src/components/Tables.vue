@@ -1,12 +1,49 @@
 <template>
-  <div id='app-table'>
-    <h4>Welcome to tables</h4>
-  </div>
+  <v-card>
+    <v-card-title>
+      {{title}}
+      <v-spacer></v-spacer>
+      <v-text-field append-icon="search" label="Search" single-line hide-details v-model="search"></v-text-field>
+    </v-card-title>
+    <v-data-table v-bind:headers="headers" v-bind:items="items" v-bind:search="search" hide-actions>
+      <template slot="headers" scope="props">
+        <span v-tooltip:bottom="{ 'html': props.item.text }">
+          {{ props.item.text }}
+        </span>
+      </template>
+      <template slot="items" scope="props">
+        <td class="text-xs-left">{{ props.item.date }}</td>
+        <td class="text-xs-right">{{ props.item.use }}</td>
+        <td class="text-xs-right">{{ props.item.numberOfUsers }}</td>
+      </template>
+    </v-data-table>
+  </v-card>
 </template>
 
 <script>
-export default {
+import { mapGetters } from 'vuex'
 
+export default {
+  data() {
+    return {
+      search: '',
+      pagination: {}
+    }
+  },
+  computed: {
+    ...mapGetters({
+      datatable: 'getDataTable'
+    }),
+    title() {
+      return this.datatable.title
+    },
+    headers() {
+      return this.datatable.headers
+    },
+    items() {
+      return this.datatable.items
+    }
+  }
 }
 </script>
 
