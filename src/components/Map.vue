@@ -61,10 +61,11 @@
 </template>
 
 <script>
-import L from 'leaflet';
-import esri from 'esri-leaflet';
-import mapLayers from '../services/map-layers.js'
+import L from 'leaflet'
+import esri from 'esri-leaflet'
+import moment from 'moment'
 import { mapGetters } from 'vuex'
+import query from '../services/EsriLeafletRelated.js'
 
 export default {
   name: 'map',
@@ -144,6 +145,12 @@ export default {
     },
     queryRelatedField(event) {
       console.log('event: ', event)
+      const dStart = moment.utc().subtract(1, 'months').startOf('month').format()
+      const dEnd = moment.utc().subtract(1, 'months').endOf('month').format()
+      const expr = "EditDate between '" + dStart + "' AND '" + dEnd + "'"
+      query(this.spaceAssessmentFeatureLayer).objectIds([event.layer.feature.id]).relationshipId('0').definitionExpression(expr).run((error, response, raw) => {
+        console.log('response: ', response)
+      })
     }
   },
   created() {
