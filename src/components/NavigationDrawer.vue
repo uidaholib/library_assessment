@@ -3,7 +3,7 @@
     <v-navigation-drawer persistent light :mini-variant.sync="mini" v-model="drawer">
       <v-list class="pa-0">
         <v-list-item v-if="user">
-          <v-list-tile avatar tag="div">
+          <v-list-tile avatar tag="div" ripple>
             <v-list-tile-avatar>
               <img v-if="(user && user.thumbnail)" :src="user.thumbnail" />
               <v-icon v-else>account_circle</v-icon>
@@ -22,7 +22,7 @@
       <v-list class="pt-0" dense>
         <v-divider></v-divider>
         <v-list-item v-for="item in navItems" :key="item" @click="navigateTo(item.to)">
-          <v-list-tile>
+          <v-list-tile ripple>
             <v-list-tile-action>
               <v-icon>{{ item.icon }}</v-icon>
             </v-list-tile-action>

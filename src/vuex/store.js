@@ -4,23 +4,27 @@ import actions from './actions';
 import getters from './getters'
 import mutations from './mutations'
 import auth from '../services/auth'
+import esri from 'esri-leaflet'
 
 Vue.use(Vuex);
+
+const token = auth.getAccessToken()
+const floor = 1
 
 const state = {
   isAuthenticated: auth.isLoggedIn(),
   user: auth.getUserDataToken(),
-  token: auth.getAccessToken(),
+  token: token,
   navigation: {
     sidebar: false
+  },
+  map: {
+    floor: 1,
+    featureLayers: [],
+    basemaps: []
   }
 };
 
-const store = new Vuex.Store({
-  state,
-  actions,
-  mutations,
-  getters
-});
+const store = new Vuex.Store({state, actions, mutations, getters});
 
 export default store;

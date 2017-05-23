@@ -7,11 +7,12 @@ let spaceAssessmentFL = esri.featureLayer({
       'ment_areas/FeatureServer/0',
   //where: 'Floor = 1',
   token: store.getters.getToken,
-  where: 'Floor = ' + 1
+  where: 'Floor = ' + store.getters.getFloor
 })
 
 spaceAssessmentFL.on('click', (e) => {
   console.log(spaceAssessmentFL);
+  console.log('event: ', e);
   let dStart = moment
     .utc()
     .startOf('month')
@@ -20,19 +21,13 @@ spaceAssessmentFL.on('click', (e) => {
     .utc()
     .endOf('month')
     .format()
-  // esri
-  //   .Related
-  //   .query(spaceAssessmentFL)
-  //   .objectIds([e.layer.feature.id])
-  //   .relationshipId('0')
-  //   .definitionExpression("EditDate between '" + dStart + "' AND '" + dEnd + "'")
-  //   .run(function (error, response, raw) {
-  //     console.log('response: ', response);
-  //   });
+    const features = spaceAssessmentFL.getFeature(e.layer.feature.id)
+  console.log('features: ', features);
 })
 
 export default {
   spaceAssessmentFeatureLayer(token, floorLevel, map) {
+    spaceAssessmentFL.where = 'Floor = ' + floorLevel
     spaceAssessmentFL.addTo(map)
   },
   floorPlansBasemap(token, floorLevel, map) {
