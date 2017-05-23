@@ -15,10 +15,10 @@ export default {
   getFloor(state) {
     return state.map.floor
   },
-  getBasemap(state, title) {
-    return state.map.basemaps.find(basemap => basemap.title === title)
+  getBasemap(state, id) {
+    return state.map.basemaps.find(basemap => basemap.id === id)
   },
-  getFeatureLayer(state, title) {
-    return state.map.featureLayers.find(featureLayer => featureLayer.title === title)
+  getFeatureLayer(state, id) {
+    return state.map.featureLayers.find(featureLayer => featureLayer.id === id)
   }
 }

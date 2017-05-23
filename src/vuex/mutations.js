@@ -23,19 +23,19 @@ export default {
   },
   addFeatureLayer(state, payload) {
     let fl = esri.featureLayer({url: payload.url, token: payload.token, where: payload.where})
-    fl.addTo(payload.map)
+    // fl.addTo(payload.map)
     state
       .map
       .featureLayers
-      .push({title: payload.title, feautureLayer: fl})
+      .push({id: payload.id, title: payload.title, feautureLayer: fl})
   },
   addBasemap(state, payload) {
     console.log('map: ', payload.map);
     let basemap = esri.tiledMapLayer({url: payload.url, token: payload.token, maxZoom: payload.maxZoom, minZoom: payload.minZoom})
-    basemap.addTo(payload.map)
+    // basemap.addTo(payload.map)
     state
       .map
       .basemaps
-      .push({title: payload.title, basemap: basemap})
+      .push({id: payload.id, title: payload.title, basemap: basemap})
   }
 }

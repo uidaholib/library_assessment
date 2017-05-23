@@ -23,7 +23,11 @@
       </v-card-title>
     </v-card-row>
     <v-card-text class="pa-0">
-      <v-card-row height="400px" id="map" class="pa-0 ma-0">
+      <v-card-row height="400px" width="100%" id="map" class="pa-0 ma-0">
+      </v-card-row>
+      <v-card-row height="50px" class="grey pa-1">
+        <span class="white--text" v-text="selectedFloor ? selectedFloor : '1st Floor'"></span>
+        <span class="white--text pl-1" v-text="building"></span>
       </v-card-row>
     </v-card-text>
     <!--<v-divider></v-divider>-->
@@ -66,10 +70,8 @@ export default {
   name: 'map',
   data() {
     let map
-    let token
     return {
       map: null,
-      token: '',
       selectedFloor: null,
       floors: [
         '1st Floor',
@@ -91,93 +93,76 @@ export default {
         'Last Year',
         'All'
       ],
-      timePeriod: null
+      timePeriod: null,
+      building: 'Library',
+      floorPlansBasemap: null,
+      spaceAssessmentFeatureLayer: null
     }
   },
   watch: {
-    // token(value) {
-    //   mapLayers.spaceAssessmentFeatureLayer(value, this.selectedFloor, this.map)
-    //   mapLayers.floorPlansBasemap(value, this.selectedFloor, this.map)
-    // },
+    token(value) {
+      this.setMapLayers(value, this.selelectedFloor)
+    },
     selectedFloor(value) {
-      console.log('selectedFloor:', value);
-      this.floorPlanBasemap.url =
-        this.$store.commit('setFloor', parseInt(value.charAt()))
-      // this.$store.commit('addBasemap', this.floorPlanBasemap)
-      this.$store.commit('addFeatureLayer', this.spaceAssessmentFL)
-      esri.tiledMapLayer({
-          url: '//tiles.arcgis.com/tiles/WLhB60Nqwp4NnHz3/arcgis/rest/services/library_' + this.floor + '_floor_floor_plans_basemap_web_app/MapServer',
-          maxZoom: 19,
-          minZoom: 16,
-          token: this.token
-        })
-        .addTo(this.map);
+      this.setMapLayers(this.token, value)
     }
   },
   computed: {
     ...mapGetters({
-      getToken: 'getToken',
-      floor: 'getFloor'
+      token: 'getToken'
     }),
-    spaceAssessmentFL() {
-      const featureLayerUrl = '//services.arcgis.com/WLhB60Nqwp4NnHz3/arcgis/rest/services/library_space_assessment_areas/FeatureServer/0'
-      const payload = {
-        title: 'spaceAssessmentFL',
-        url: featureLayerUrl,
-        token: this.getToken,
-        where: 'Floor = ' + this.floor,
-        map: this.map
-      }
-      return payload
-    },
-    floorPlanBasemap() {
-      const basemapUrl = '//tiles.arcgis.com/tiles/WLhB60Nqwp4NnHz3/arcgis/rest/services/library_' + this.floor + '_floor_floor_plans_basemap_web_app/MapServer'
-      const payload = {
-        title: 'floorPlanBasemap',
-        url: basemapUrl,
-        maxZoom: 19,
-        minZoom: 16,
-        token: this.token,
-        map: this.map
-      }
-      return payload
+    floor() {
+      return this.selectedFloor.substring(0, 3)
     }
   },
   methods: {
+    setFloorPlansBasemap(token, maxZoom, minZoom, floor) {
+      this.floorPlansBasemap = esri.tiledMapLayer({
+        url: '//tiles.arcgis.com/tiles/WLhB60Nqwp4NnHz3/arcgis/rest/services/library_' + floor + '_floor_floor_plans_basemap_web_app/MapServer',
+        maxZoom: maxZoom,
+        minZoom: minZoom,
+        token: token
+      }).addTo(this.map)
+    },
+    setSpaceAssessmentFeatureLayer(token, floorLvl) {
+      this.spaceAssessmentFeatureLayer = esri.featureLayer({
+        url: '//services.arcgis.com/WLhB60Nqwp4NnHz3/arcgis/rest/services/library_space_assess' +
+        'ment_areas/FeatureServer/0',
+        //where: 'Floor = 1',
+        token: token,
+        where: 'Floor = ' + floorLvl
+      }).addTo(this.map)
+      this.spaceAssessmentFeatureLayer.on('click', e => this.queryRelatedField(e))
+    },
+    setMapLayers(tokenValue, floorValue) {
+      const floor = floorValue.substring(0, 3)
+      const floorLvl = floorValue.charAt()
+      this.map.removeLayer(this.floorPlansBasemap)
+      this.map.removeLayer(this.spaceAssessmentFeatureLayer)
+      this.setSpaceAssessmentFeatureLayer(tokenValue, floorLvl)
+      this.setFloorPlansBasemap(tokenValue, 19, 16, floor)
+    },
+    queryRelatedField(event) {
+      console.log('event: ', event)
+    }
   },
   created() {
-    this.token = this.getToken
-    const featureLayerUrl = '//services.arcgis.com/WLhB60Nqwp4NnHz3/arcgis/rest/services/library_space_assessment_areas/FeatureServer/0'
-    const basemapUrl = '//tiles.arcgis.com/tiles/WLhB60Nqwp4NnHz3/arcgis/rest/services/library_' + this.floor + '_floor_floor_plans_basemap_web_app/MapServer'
-    this.spaceAssessmentFL = {
-      title: 'spaceAssessmentFL',
-      url: featureLayerUrl,
-      token: this.getToken,
-      where: 'Floor = ' + this.floor,
-      map: this.map
-    }
-    this.floorPlanBasemap = {
-      title: 'floorPlanBasemap',
-      url: basemapUrl,
-      maxZoom: 19,
-      minZoom: 16,
-      token: this.token,
-      map: this.map
-    }
   },
   mounted() {
-    this.map = L.map('map').setView([46.7274, -117.0144], 19);
-    esri.basemapLayer('Topographic').addTo(this.map);
-    // this.$store.commit('addBasemap', this.floorPlanBasemap)
-    this.$store.commit('addFeatureLayer', this.spaceAssessmentFL)
+    const floor = '1st'
+    const floorLvl = 1
+    this.map = L.map('map').setView([46.7274, -117.0144], 19)
+    esri.basemapLayer('Topographic').addTo(this.map)
+    this.setFloorPlansBasemap(this.token, 19, 16, floor)
+    this.setSpaceAssessmentFeatureLayer(this.token, floorLvl)
   }
 }
 </script>
 
 <style scoped>
 #map {
-  /*height: 400pt;*/
-  width: 100%;
+  /*height: 100%;*/
+  /*width: 100%;*/
   z-index: 1!important;
 }
 </style>
