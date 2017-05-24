@@ -1,7 +1,7 @@
 <template>
-  <div id="charts">
+  <v-card class="mt-4" height="400px">
     <h4>Charts</h4>
-  </div>
+  </v-card>
 </template>
 
 <script>

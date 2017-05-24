@@ -2,8 +2,8 @@
   <v-layout row wrap>
     <v-flex xs12>
       <app-map></app-map>
-      <app-table></app-table>
-      <app-chart></app-chart>
+      <app-table id="building-table"></app-table>
+      <app-chart id="building-chart"></app-chart>
     </v-flex>
   </v-layout>
 </template>
@@ -27,7 +27,7 @@ export default {
   computed: {
     ...mapGetters({
       getUser: 'getUser',
-      isAuthenticated: 'getAuthentication',
+      isAuthenticated: 'getAuthentication'
     })
   },
   watch: {

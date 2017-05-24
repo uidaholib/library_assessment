@@ -29,8 +29,8 @@
           <h6 class="indigo--text" v-text="selectedFloor ? selectedFloor : '1st Floor'"></h6>
           <h6 class="indigo--text pl-1" v-text="building"></h6>
           <v-spacer></v-spacer>
-          <v-btn class="indigo--text" @click.native="navigateTo('/tables')">See Data Table</v-btn>
-          <v-btn class="indigo--text">See Chart</v-btn>
+          <v-btn class="indigo--text" @click.native="navigateTo('/tables')">See Data Tables</v-btn>
+          <v-btn class="indigo--text">See Charts</v-btn>
         </v-card-row>
       </v-card-text>
       <!--<v-divider></v-divider>-->
@@ -73,8 +73,10 @@
           <v-card-text v-text="dialog.text"></v-card-text>
         </v-card-row>
         <v-card-row>
-          <v-btn class="green--text darken-1" flat="flat" @click.native="see('building-table')">Table</v-btn>
-          <v-btn class="green--text darken-1" flat="flat" @click.native="see('chart')">Chart</v-btn>
+          <!--<v-btn class="green--text darken-1" flat="flat" @click.native="see('building-table')">Table</v-btn>
+          <v-btn class="green--text darken-1" flat="flat" @click.native="see('chart')">Chart</v-btn>-->
+          <a class="btn" href="#building-table" @click="dialog.model = false">Table</a>
+          <a class="btn" href="#building-table" @click="dialog.model = false">Chart</a>
         </v-card-row>
       </v-card>
     </v-dialog>
@@ -171,6 +173,7 @@ export default {
     },
     see(link) {
       this.dialog.model = false
+      router.push('/home#' + link.toLowerCase())
     },
     setFloorPlansBasemap(token, maxZoom, minZoom, floor) {
       this.floorPlansBasemap = esri.tiledMapLayer({

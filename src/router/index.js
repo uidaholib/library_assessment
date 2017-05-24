@@ -7,6 +7,14 @@ import Charts from '@/components/Charts'
 import Tables from '@/components/Tables'
 Vue.use(Router)
 
+const scrollBehavior = (to, from, savedPosition) => {
+  if (to.hash) {
+    return {
+      selector: to.hash
+    }
+  }
+}
+
 const routes = [
   {
     path: '/',
@@ -33,4 +41,4 @@ const routes = [
   }
 ]
 
-export default new Router({mode: 'history', routes})
+export default new Router({mode: 'history', scrollBehavior, routes})
