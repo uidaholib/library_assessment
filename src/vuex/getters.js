@@ -29,5 +29,8 @@ export default {
   },
   getBuilding(state) {
     return state.map.building
+  },
+  getChartData(state) {
+    return state.chartData
   }
 }

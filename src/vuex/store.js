@@ -30,6 +30,10 @@ const state = {
     title: '',
     headers: [],
     items: []
+  },
+  chartData: {
+    dataCollection: {},
+    options: {}
   }
 };
 

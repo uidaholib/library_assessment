@@ -1,31 +1,89 @@
 import moment from 'moment'
 
-function buildingUseFormatter(value) {
-  let use
-  switch (value) {
-    case 0:
-      use = 'Browsing Stacks'
-      break
-    case 1:
-      use = 'Individual Studying'
-      break
-    case 2:
-      use = 'Lounging'
-      break
-    case 3:
-      use = 'Meeting / Group Study'
-      break
-    case 4:
-      use = 'Meeting / Service Point (Circulation / Reference / ITS Help)'
-      break
-    case 5:
-      use = 'Using Library Computers'
-      break
-    default:
-      use = 'N/A'
-      break
+const BUILDING_SPACES = [
+  {
+    space: '1A',
+    name: 'Group Study'
+  }, {
+    space: '1B',
+    name: 'Cafe'
+  }, {
+    space: '1C',
+    name: 'Landing'
+  }, {
+    space: '1D',
+    name: 'Computer Lab'
+  }, {
+    space: '1E',
+    name: 'Individual/Small Group Study'
+  }, {
+    space: '1F',
+    name: 'MILL (134)'
+  }, {
+    space: '1G',
+    name: 'Group Study (133)'
+  }, {
+    space: '1H',
+    name: 'Group Study (132)'
+  }, {
+    space: '1I',
+    name: 'Group Study (131)'
+  }, {
+    space: '1J',
+    name: 'Classroom (120)'
+  }, {
+    space: '2A',
+    name: '2nd floor'
+  }, {
+    space: '3A',
+    name: '3rd floor'
+  }, {
+    space: '4A',
+    name: '4th floor'
+  }, {
+    space: '3A_1',
+    name: 'IMTC Area 1'
+  }, {
+    space: '3B_1',
+    name: 'IMTC Area 2'
+  }, {
+    space: '3C_1',
+    name: 'IMTC Area 3'
+  }, {
+    space: '3D_1',
+    name: 'IMTC Area 4'
   }
-  return use
+]
+
+const BUILDING_USES = [
+  {
+    id: 0,
+    use: 'Browsing Stacks'
+  }, {
+    id: 1,
+    use: 'Individual Studying'
+  }, {
+    id: 2,
+    use: 'Lounging'
+  }, {
+    id: 3,
+    use: 'Meeting / Group Study'
+  }, {
+    id: 4,
+    use: 'Meeting / Service Point (Circulation / Reference / ITS Help)'
+  }, {
+    id: 5,
+    use: 'Using Library Computers'
+  }
+]
+
+function buildingUseFormatter(value) {
+  const building = BUILDING_USES.find(building => building.id === value)
+  if (building) {
+    return building.use
+  } else {
+    return 'N/A'
+  }
 }
 
 function buildingNameFormatter(value) {
@@ -42,11 +100,9 @@ function buildingNameFormatter(value) {
   return name
 }
 
-function roomLocationFormatter(value) {
-  return {
-      floor: value[0],
-      room: value[1]
-    }
+function roomLocationFormatter(spaceID) {
+  const space = BUILDING_SPACES.find(s => s.space === spaceID)
+  return space.name
 }
 
 function dateFormatter(value) {
@@ -187,12 +243,14 @@ function getItemsFromQuery(response) {
 
 function getRoomLocationFromQuery(response) {
   if (response.features.length !== 0) {
-    const spaceID = response.features[0].properties.SpaceID.toString()
-    console.log('spaceID: ', spaceID);
-    return {
-      floor: spaceID[0],
-      room: spaceID[1]
-    }
+    const spaceID = response
+      .features[0]
+      .properties
+      .SpaceID
+      .toString()
+    const space = roomLocationFormatter(spaceID)
+    console.log('space: ', space);
+    return space
   }
 }
 
@@ -200,6 +258,8 @@ export default {
   durationFormatter,
   getItemsFromQuery,
   buildingNameFormatter,
+  buildingUseFormatter,
   roomLocationFormatter,
-  getRoomLocationFromQuery
+  getRoomLocationFromQuery,
+  BUILDING_USES
 }

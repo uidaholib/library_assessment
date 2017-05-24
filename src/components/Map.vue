@@ -88,6 +88,7 @@ import moment from 'moment'
 import { mapGetters, mapMutations } from 'vuex'
 import query from '../libs/EsriLeafletRelated.js'
 import tableHelpers from '../libs/table-helpers.js'
+import chartHelpers from '../libs/chart-helpers.js'
 
 export default {
   name: 'map',
@@ -155,8 +156,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      token: 'getToken'
-    }),
+      token: 'getToken'    }),
     floor() {
       return this.selectedFloor.substring(0, 3)
     },
@@ -168,7 +168,8 @@ export default {
   methods: {
     ...mapMutations({
       setDataTable: 'setDataTable',
-      setRoomLocation: 'setRoomLocation'
+      setRoomLocation: 'setRoomLocation',
+      setChartData: 'setChartData'
     }),
     navigateTo(to) {
       router.push(to)
@@ -212,11 +213,9 @@ export default {
       query(this.spaceAssessmentFeatureLayer).objectIds([event.layer.feature.id]).relationshipId('0').definitionExpression(expr).run((error, response, raw) => {
         if (response.features.length !== 0) {
           const items = tableHelpers.getItemsFromQuery(response)
-          console.log('response: ', response);
           this.dataAvailable = (response.length !== 0)
-          const floor = (this.selectedFloor) ? this.selectedFloor : '1st Floor'
-          const roomLocation = tableHelpers.getRoomLocationFromQuery(response)
-          const title = this.building + ' - Room ' + roomLocation.room + ' Usage Data'
+          const space = tableHelpers.getRoomLocationFromQuery(response)
+          const title = this.building + ' - ' + space + ' Space Usage'
           const headers = [
             {
               text: 'Collection Date',
@@ -227,6 +226,26 @@ export default {
             { text: 'Type of Use', value: 'use' },
             { text: 'Number of Users', value: 'numberOfUsers' }
           ]
+          const filter = {
+            name: 'Individual Studying',
+            field: 'use',
+            value: 'numberOfUsers'
+          }
+          const aggregated = chartHelpers.aggregateFields(items, filter)
+          let filters = []
+          tableHelpers.BUILDING_USES.forEach(b => {
+            filters.push({
+              name: b.use,
+              field: 'use',
+            value: 'numberOfUsers'
+            })
+          })
+          const label = 'Usage'
+          const backgroundColor = '#f87979'
+          const dataCollection = chartHelpers.toChartData(items, filters, label, backgroundColor)
+          console.log('dataCollection: ', dataCollection)
+          const options = { responsive: true, maintainAspectRatio: false }
+          this.setChartData({dataCollection, options})
           this.setDataTable({ title, headers, items })
         }
       })

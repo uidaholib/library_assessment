@@ -52,5 +52,8 @@ export default {
   },
   setRoomLocation(state, value) {
     state.map.roomLocation = tableHelpers.roomLocationFormatter(value)
+  },
+  setChartData(state, chartData) {
+    state.chartData = chartData
   }
 }
