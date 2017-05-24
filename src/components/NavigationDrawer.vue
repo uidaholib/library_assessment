@@ -1,6 +1,6 @@
 <template>
-  <v-app id="example-2">
-    <v-navigation-drawer persistent light :mini-variant.sync="mini" v-model="drawer">
+  <v-app id="navigation-drawer">
+    <v-navigation-drawer class="grey lighten-4" persistent light :mini-variant.sync="mini" v-model="drawer">
       <v-list class="pa-0">
         <v-list-item v-if="user">
           <v-list-tile avatar tag="div" ripple>

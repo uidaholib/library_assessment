@@ -1,5 +1,6 @@
 import auth from '../services/auth';
 import esri from 'esri-leaflet'
+import tableHelpers from '../libs/table-helpers'
 
 export default {
   setToken(state, token) {
@@ -45,5 +46,11 @@ export default {
   },
   openMapDialog(state, payload) {
     state.navigation.mapDialog = payload
+  },
+  setBuilding(state, value) {
+    state.map.building = tableHelpers.buildingNameFormatter(value)
+  },
+  setRoomLocation(state, value) {
+    state.map.roomLocation = tableHelpers.roomLocationFormatter(value)
   }
 }

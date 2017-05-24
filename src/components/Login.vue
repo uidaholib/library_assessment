@@ -1,23 +1,23 @@
 <template>
-  <div id='login'>
-   <v-card class="grey lighten-4 elevation-2">
-    <v-card-row>
-      <v-card-title>Login to Arcgis Online</v-card-title>
-    </v-card-row>
-    <v-card-row>
-      <v-card-text>
-        <v-container fluid>
-          <v-text-field label="Username" v-model="username" required />
-          <v-text-field label="Password" v-model="password" type="password" required />
-          <small>*indicates required field</small>
-        </v-container>
-      </v-card-text>
-    </v-card-row>
-    <v-card-row actions>
-      <v-btn class="white--text blue darken-3" raised @click.native="login">Login</v-btn>
-    </v-card-row>
-  </v-card>
-  </div>
+  <v-container id='login' class="px-4">
+      <v-card class="grey lighten-4 elevation-2">
+        <v-card-row>
+          <v-card-title>Login to Arcgis Online</v-card-title>
+        </v-card-row>
+        <v-card-row>
+          <v-card-text>
+            <v-container fluid>
+              <v-text-field label="Username" v-model="username" required />
+              <v-text-field label="Password" v-model="password" type="password" required />
+              <small>*indicates required field</small>
+            </v-container>
+          </v-card-text>
+        </v-card-row>
+        <v-card-row actions>
+          <v-btn class="white--text blue darken-3" raised @click.native="login">Login</v-btn>
+        </v-card-row>
+      </v-card>
+  </v-container>
 </template>
 
 <script>
@@ -34,25 +34,16 @@ export default {
     }
   },
   computed: {
-    isEntryValid(value) {
-      if (value) {
-        return true
-      }
-      else {
-        return false
-      }
-    }
   },
   methods: {
     login() {
       console.log('token: ', auth.getAccessToken(), '\nuser: ', auth.getUserDataToken())
-      // const expiration = 20160
-      const expiration = 1
+      const expiration = 20160
       const credentials = {
         username: this.username,
         password: this.password,
         f: 'json',
-        expiration: 20160,
+        expiration: expiration,
         client: 'referer',
         referer: window.location.origin
       }
@@ -69,7 +60,6 @@ export default {
 </script>
 
 <style scoped>
-#auth {
-  width: 400pt;
+#login {
 }
 </style>

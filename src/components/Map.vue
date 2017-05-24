@@ -26,8 +26,7 @@
         <v-card-row height="400px" width="100%" id="map" class="pa-0 ma-0">
         </v-card-row>
         <v-card-row height="50px" class="grey pa-1">
-          <h6 class="indigo--text" v-text="selectedFloor ? selectedFloor : '1st Floor'"></h6>
-          <h6 class="indigo--text pl-1" v-text="building"></h6>
+          <span class="white--text pl-1" v-text="building"></span>
           <v-spacer></v-spacer>
           <v-btn class="indigo--text" @click.native="navigateTo('/tables')">See Data Tables</v-btn>
           <v-btn class="indigo--text">See Charts</v-btn>
@@ -70,11 +69,9 @@
           <v-card-title v-text="dialog.title"></v-card-title>
         </v-card-row>
         <v-card-row>
-          <v-card-text v-text="dialog.text"></v-card-text>
+          <v-card-text class="text-xs-left" v-text="dialog.text"></v-card-text>
         </v-card-row>
         <v-card-row>
-          <!--<v-btn class="green--text darken-1" flat="flat" @click.native="see('building-table')">Table</v-btn>
-          <v-btn class="green--text darken-1" flat="flat" @click.native="see('chart')">Chart</v-btn>-->
           <a class="btn" href="#building-table" @click="dialog.model = false">Table</a>
           <a class="btn" href="#building-table" @click="dialog.model = false">Chart</a>
         </v-card-row>
@@ -106,6 +103,7 @@ export default {
         model: false,
         title: 'Area Selected',
         text: 'Visualize Data With Chart/Table',
+        error: 'No data available for this selection',
         actions: ['Chart', 'Table']
       },
       floors: [
@@ -131,7 +129,6 @@ export default {
         'All'
       ],
       timePeriod: null,
-      building: 'Library',
       floorPlansBasemap: null,
       spaceAssessmentFeatureLayer: null
     }
@@ -162,11 +159,16 @@ export default {
     }),
     floor() {
       return this.selectedFloor.substring(0, 3)
+    },
+    building() {
+      const floor = (this.selectedFloor) ? this.selectedFloor : '1st Floor'
+      return floor + ' Library'
     }
   },
   methods: {
     ...mapMutations({
-      setDataTable: 'setDataTable' 
+      setDataTable: 'setDataTable',
+      setRoomLocation: 'setRoomLocation'
     }),
     navigateTo(to) {
       router.push(to)
@@ -208,21 +210,25 @@ export default {
       const expr = "EditDate between '" + this.period.start + "' AND '" + this.period.end + "'"
       this.dialog.model = true
       query(this.spaceAssessmentFeatureLayer).objectIds([event.layer.feature.id]).relationshipId('0').definitionExpression(expr).run((error, response, raw) => {
-        const items = tableHelpers.getItemsFromQuery(response)
-        console.log('response: ', response);
-        this.dataAvailable = (this.items)
-        const title = building + ' Building Usage Data'
-        const headers = [
-          {
-            text: 'Collection Date',
-            left: true,
-            sortable: true,
-            value: 'date'
-          },
-          { text: 'Type of Use', value: 'use' },
-          { text: 'Number of Users', value: 'numberOfUsers' }
-        ]
-        this.setDataTable({ title, headers, items })
+        if (response.features.length !== 0) {
+          const items = tableHelpers.getItemsFromQuery(response)
+          console.log('response: ', response);
+          this.dataAvailable = (response.length !== 0)
+          const floor = (this.selectedFloor) ? this.selectedFloor : '1st Floor'
+          const roomLocation = tableHelpers.getRoomLocationFromQuery(response)
+          const title = this.building + ' - Room ' + roomLocation.room + ' Usage Data'
+          const headers = [
+            {
+              text: 'Collection Date',
+              left: true,
+              sortable: true,
+              value: 'date'
+            },
+            { text: 'Type of Use', value: 'use' },
+            { text: 'Number of Users', value: 'numberOfUsers' }
+          ]
+          this.setDataTable({ title, headers, items })
+        }
       })
     }
   },

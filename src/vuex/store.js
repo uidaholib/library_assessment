@@ -21,6 +21,8 @@ const state = {
   },
   map: {
     floor: 1,
+    building: '1st Floor Library',
+    roomLocation: '',
     featureLayers: [],
     basemaps: []
   },

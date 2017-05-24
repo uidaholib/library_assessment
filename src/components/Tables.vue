@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card class="mt-4" v-if="items.length !== 0">
     <v-card-title>
       {{title}}
       <v-spacer></v-spacer>
@@ -47,6 +47,9 @@ export default {
     items() {
       return this.datatable.items
     }
+  },
+  mounted() {
+    console.log('items: ', this.items);
   }
 }
 </script>

@@ -26,5 +26,8 @@ export default {
   },
   getMapDialog(state) {
     return state.navigation.mapDialog
+  },
+  getBuilding(state) {
+    return state.map.building
   }
 }

@@ -42,6 +42,13 @@ function buildingNameFormatter(value) {
   return name
 }
 
+function roomLocationFormatter(value) {
+  return {
+      floor: value[0],
+      room: value[1]
+    }
+}
+
 function dateFormatter(value) {
   let date = new Date(value)
   const options = {
@@ -60,125 +67,139 @@ function dateFormatter(value) {
 
 function durationFormatter(value) {
   let dStart
-    let dEnd
-      switch (value) {
-        case 'Today':
-          dStart = moment
-            .utc()
-            .startOf('day')
-            .format()
-            dEnd = moment
-            .utc()
-            .endOf('day')
-            .format()
-            break
-        case 'Yesterday':
-          dStart = moment
-            .utc()
-            .subtract(1, 'days')
-            .startOf('day')
-            .format()
-            dEnd = moment
-            .utc()
-            .subtract(1, 'days')
-            .endOf('day')
-            .format()
-            break
-        case 'This Week':
-          dStart = moment
-            .utc()
-            .weekday(0)
-            .format()
-            dEnd = moment
-            .utc()
-            .weekday(6)
-            .format()
-            break
-        case 'Last Week':
-          dStart = moment
-            .utc()
-            .weekday(-7)
-            .format()
-            dEnd = moment
-            .utc()
-            .weekday(-1)
-            .format()
-            break
-        case 'This Month':
-          dStart = moment
-            .utc()
-            .startOf('month')
-            .format()
-            dEnd = moment
-            .utc()
-            .endOf('month')
-            .format()
-            break
-        case 'Last Month':
-          dStart = moment
-            .utc()
-            .subtract(1, 'months')
-            .startOf('month')
-            .format()
-            dEnd = moment
-            .utc()
-            .subtract(1, 'months')
-            .endOf('month')
-            .format()
-            break
-        case 'This Year':
-          dStart = moment
-            .utc()
-            .startOf('year')
-            .format()
-            dEnd = moment
-            .utc()
-            .endOf('year')
-            .format()
-            break
-        case 'Last Year':
-          dStart = moment
-            .utc()
-            .subtract(1, 'years')
-            .startOf('year')
-            .format('YYYY-MM-DD')
-            dEnd = moment
-            .utc()
-            .subtract(1, 'years')
-            .endOf('year')
-            .format('YYYY-MM-DD')
-            break
-          case 'All':
-            dStart = moment
-            .utc('1900-01-01')
-            .format();
-            dEnd = moment
-            .utc()
-            .endOf('day')
-            .format();
-            break
-        default:
-          break
-      }
-      return {start: dStart, end: dEnd}
-    }
+  let dEnd
+  switch (value) {
+    case 'Today':
+      dStart = moment
+        .utc()
+        .startOf('day')
+        .format();
+      dEnd = moment
+        .utc()
+        .endOf('day')
+        .format();
+      break
+    case 'Yesterday':
+      dStart = moment
+        .utc()
+        .subtract(1, 'days')
+        .startOf('day')
+        .format();
+      dEnd = moment
+        .utc()
+        .subtract(1, 'days')
+        .endOf('day')
+        .format();
+      break
+    case 'This Week':
+      dStart = moment
+        .utc()
+        .weekday(0)
+        .format();
+      dEnd = moment
+        .utc()
+        .weekday(6)
+        .format();
+      break
+    case 'Last Week':
+      dStart = moment
+        .utc()
+        .weekday(-7)
+        .format();
+      dEnd = moment
+        .utc()
+        .weekday(-1)
+        .format();
+      break
+    case 'This Month':
+      dStart = moment
+        .utc()
+        .startOf('month')
+        .format();
+      dEnd = moment
+        .utc()
+        .endOf('month')
+        .format();
+      break
+    case 'Last Month':
+      dStart = moment
+        .utc()
+        .subtract(1, 'months')
+        .startOf('month')
+        .format();
+      dEnd = moment
+        .utc()
+        .subtract(1, 'months')
+        .endOf('month')
+        .format();
+      break
+    case 'This Year':
+      dStart = moment
+        .utc()
+        .startOf('year')
+        .format();
+      dEnd = moment
+        .utc()
+        .endOf('year')
+        .format();
+      break
+    case 'Last Year':
+      dStart = moment
+        .utc()
+        .subtract(1, 'years')
+        .startOf('year')
+        .format('YYYY-MM-DD');
+      dEnd = moment
+        .utc()
+        .subtract(1, 'years')
+        .endOf('year')
+        .format('YYYY-MM-DD');
+      break
+    case 'All':
+      dStart = moment
+        .utc('1900-01-01')
+        .format();
+      dEnd = moment
+        .utc()
+        .endOf('day')
+        .format();
+      break
+    default:
+      break
+  }
+  return {start: dStart, end: dEnd}
+}
 
-    function getItemsFromQuery(response) {
-      let results = []
-      const features = response.features
-      const properties = features.map(feature => feature.properties)
-      properties.forEach(item => {
-        results.push({
-          value: false,
-          date: dateFormatter(item.CreationDate),
-          use: buildingUseFormatter(item.TYPE_OF_USAGE),
-          numberOfUsers: item.NUMBER_OF_USERS
-        })
-      })
-      return results
+function getItemsFromQuery(response) {
+  let results = []
+  const features = response.features
+  const properties = features.map(feature => feature.properties)
+  properties.forEach(item => {
+    results.push({
+      value: false,
+      date: dateFormatter(item.CreationDate),
+      use: buildingUseFormatter(item.TYPE_OF_USAGE),
+      numberOfUsers: item.NUMBER_OF_USERS
+    })
+  })
+  return results
+}
+
+function getRoomLocationFromQuery(response) {
+  if (response.features.length !== 0) {
+    const spaceID = response.features[0].properties.SpaceID.toString()
+    console.log('spaceID: ', spaceID);
+    return {
+      floor: spaceID[0],
+      room: spaceID[1]
     }
-    export default {
-      getItemsFromQuery,
-      buildingNameFormatter,
-      durationFormatter
-    }
+  }
+}
+
+export default {
+  durationFormatter,
+  getItemsFromQuery,
+  buildingNameFormatter,
+  roomLocationFormatter,
+  getRoomLocationFromQuery
+}
