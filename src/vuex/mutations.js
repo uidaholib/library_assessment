@@ -40,7 +40,7 @@ export default {
       .push({id: payload.id, title: payload.title, basemap: basemap})
   },
   setDataTable(state, payload) {
-    state.datatable.title = payload.title
+    state.datatable.tableTitle = payload.tableTitle
     state.datatable.headers = payload.headers
     state.datatable.items = payload.items
   },

@@ -27,7 +27,10 @@ const state = {
     basemaps: []
   },
   datatable: {
-    title: '',
+    tableTitle: {
+      title: '',
+      subtitle: '',
+    },
     headers: [],
     items: []
   },
@@ -37,6 +40,11 @@ const state = {
   }
 };
 
-const store = new Vuex.Store({state, actions, mutations, getters});
+const store = new Vuex.Store({
+  state,
+  actions,
+  mutations,
+  getters
+});
 
 export default store;

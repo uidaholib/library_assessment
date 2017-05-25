@@ -1,6 +1,11 @@
 <template>
-  <v-card v-if="display" class="mt-4 pa-2">
-    <v-card-title>Charts</v-card-title>
+  <v-card class="mt-4 pa-2" v-if="dataAvailable">
+    <v-card-title>
+      <h5>{{chartTitle.title}}</h5>
+    </v-card-title>
+    <v-card-row class="pl-4">
+      <h6>{{chartTitle.subtitle}}</h6>
+    </v-card-row>
     <v-card-row>
       <v-card-text>
         <bar-chart :chart-data="chartData.dataCollection" :options="options"></bar-chart>
@@ -18,8 +23,6 @@ import tableHelpers from '../libs/table-helpers.js'
 export default {
   data() {
     return {
-      display: true,
-      dataCollection: {},
       data: {
         labels: ['January', 'February', 'March', 'April'],
         datasets: [
@@ -66,11 +69,21 @@ export default {
   },
   computed: {
     ...mapGetters({
-      chartData: 'getChartData'
+      chartData: 'getChartData',
+      datatable: 'getDataTable'
     }),
     items() {
       console.log('chart items: ', this.datatable.items)
       return this.datatable.items
+    },
+    chartTitle() {
+      return this.datatable.tableTitle
+    },
+    dataAvailable() {
+      if (this.datatable) {
+        return this.datatable.items.length !== 0
+      }
+      return false
     }
   },
   watch: {

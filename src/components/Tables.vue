@@ -1,10 +1,13 @@
 <template>
   <v-card class="mt-4" v-if="items.length !== 0">
     <v-card-title>
-      {{title}}
+      <h5>{{tableTitle.title}}</h5>
       <v-spacer></v-spacer>
       <v-text-field append-icon="search" label="Search" single-line hide-details v-model="search"></v-text-field>
     </v-card-title>
+    <v-card-row class="pl-4">
+      <h6>{{tableTitle.subtitle}}</h6>
+    </v-card-row>
     <v-card-row>
       <v-data-table :headers="headers" :items="items" :search="search">
         <template slot="headers" scope="props">
@@ -38,8 +41,8 @@ export default {
     ...mapGetters({
       datatable: 'getDataTable'
     }),
-    title() {
-      return this.datatable.title
+    tableTitle() {
+      return this.datatable.tableTitle
     },
     headers() {
       return this.datatable.headers

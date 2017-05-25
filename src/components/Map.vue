@@ -156,7 +156,8 @@ export default {
   },
   computed: {
     ...mapGetters({
-      token: 'getToken'    }),
+      token: 'getToken'
+    }),
     floor() {
       return this.selectedFloor.substring(0, 3)
     },
@@ -215,7 +216,10 @@ export default {
           const items = tableHelpers.getItemsFromQuery(response)
           this.dataAvailable = (response.length !== 0)
           const space = tableHelpers.getRoomLocationFromQuery(response)
-          const title = this.building + ' - ' + space + ' Space Usage'
+          const tableTitle = {
+            title: this.building,
+            subtitle: space + ' Space Usage'
+          }
           const headers = [
             {
               text: 'Collection Date',
@@ -237,7 +241,7 @@ export default {
             filters.push({
               name: b.use,
               field: 'use',
-            value: 'numberOfUsers'
+              value: 'numberOfUsers'
             })
           })
           const label = 'Number of Users'
@@ -245,8 +249,8 @@ export default {
           const dataCollection = chartHelpers.toChartData(items, filters, label, backgroundColor)
           console.log('dataCollection: ', dataCollection)
           const options = { responsive: true, maintainAspectRatio: false }
-          this.setChartData({dataCollection, options})
-          this.setDataTable({ title, headers, items })
+          this.setChartData({ dataCollection, options })
+          this.setDataTable({ tableTitle, headers, items })
         }
       })
     }
