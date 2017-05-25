@@ -87,8 +87,8 @@ import router from '../router'
 import moment from 'moment'
 import { mapGetters, mapMutations } from 'vuex'
 import query from '../libs/EsriLeafletRelated.js'
+import mapHelpers from '../libs/map-helpers.js'
 import tableHelpers from '../libs/table-helpers.js'
-import chartHelpers from '../libs/chart-helpers.js'
 
 export default {
   name: 'map',
@@ -195,7 +195,11 @@ export default {
         token: token,
         where: 'Floor = ' + floorLvl
       }).addTo(this.map)
-      this.spaceAssessmentFeatureLayer.on('click', e => this.queryRelatedField(e))
+      this.spaceAssessmentFeatureLayer.on('click', e => {
+        const response = mapHelpers.queryRelatedField(e, this.period, this.spaceAssessmentFeatureLayer, this.building)
+        this.dialog.model = true
+        this.dataAvailable = (response !== 0)
+      })
     },
     setMapLayers(tokenValue, floorValue) {
       const floor = floorValue.substring(0, 3)
@@ -204,55 +208,6 @@ export default {
       this.map.removeLayer(this.spaceAssessmentFeatureLayer)
       this.setSpaceAssessmentFeatureLayer(tokenValue, floorLvl)
       this.setFloorPlansBasemap(tokenValue, 19, 16, floor)
-    },
-    queryRelatedField(event) {
-      const building = tableHelpers.buildingNameFormatter(event.layer.feature.properties.BldgName)
-      const dStart = moment.utc().subtract(1, 'months').startOf('month').format()
-      const dEnd = moment.utc().subtract(1, 'months').endOf('month').format()
-      const expr = "EditDate between '" + this.period.start + "' AND '" + this.period.end + "'"
-      this.dialog.model = true
-      query(this.spaceAssessmentFeatureLayer).objectIds([event.layer.feature.id]).relationshipId('0').definitionExpression(expr).run((error, response, raw) => {
-        if (response.features.length !== 0) {
-          const items = tableHelpers.getItemsFromQuery(response)
-          this.dataAvailable = (response.length !== 0)
-          const space = tableHelpers.getRoomLocationFromQuery(response)
-          const tableTitle = {
-            title: this.building,
-            subtitle: space + ' Space Usage'
-          }
-          const headers = [
-            {
-              text: 'Collection Date',
-              left: true,
-              sortable: true,
-              value: 'date'
-            },
-            { text: 'Type of Use', value: 'use' },
-            { text: 'Number of Users', value: 'numberOfUsers' }
-          ]
-          const filter = {
-            name: 'Individual Studying',
-            field: 'use',
-            value: 'numberOfUsers'
-          }
-          const aggregated = chartHelpers.aggregateFields(items, filter)
-          let filters = []
-          tableHelpers.BUILDING_USES.forEach(b => {
-            filters.push({
-              name: b.use,
-              field: 'use',
-              value: 'numberOfUsers'
-            })
-          })
-          const label = 'Number of Users'
-          const backgroundColor = '#f87979'
-          const dataCollection = chartHelpers.toChartData(items, filters, label, backgroundColor)
-          console.log('dataCollection: ', dataCollection)
-          const options = { responsive: true, maintainAspectRatio: false }
-          this.setChartData({ dataCollection, options })
-          this.setDataTable({ tableTitle, headers, items })
-        }
-      })
     }
   },
   created() {
