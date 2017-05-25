@@ -74,6 +74,10 @@ const BUILDING_USES = [
   }, {
     id: 5,
     use: 'Using Library Computers'
+  },
+   {
+    id: null,
+    use: 'N/A'
   }
 ]
 
@@ -249,7 +253,6 @@ function getRoomLocationFromQuery(response) {
       .SpaceID
       .toString()
     const space = roomLocationFormatter(spaceID)
-    console.log('space: ', space);
     return space
   }
 }

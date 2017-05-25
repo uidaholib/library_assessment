@@ -73,7 +73,6 @@ export default {
       datatable: 'getDataTable'
     }),
     items() {
-      console.log('chart items: ', this.datatable.items)
       return this.datatable.items
     },
     chartTitle() {
@@ -87,9 +86,6 @@ export default {
     }
   },
   watch: {
-    chartData(value) {
-      console.log('chartData: ', this.chartData)
-    }
   },
   mounted() {
   },

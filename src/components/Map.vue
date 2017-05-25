@@ -142,16 +142,13 @@ export default {
       this.setMapLayers(this.token, value)
     },
     timePeriod(value) {
-      console.log('period: ', value);
       this.period = tableHelpers.durationFormatter(value)
     },
     startDateEntry(value) {
       this.period.start = moment.utc(value).format()
-      console.log('start date: ', this.period.start)
     },
     endDateEntry(value) {
       this.period.end = moment.utc(value).format()
-      console.log('end date: ', this.period.end)
     }
   },
   computed: {
