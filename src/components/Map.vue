@@ -240,7 +240,7 @@ export default {
             value: 'numberOfUsers'
             })
           })
-          const label = 'Usage'
+          const label = 'Number of Users'
           const backgroundColor = '#f87979'
           const dataCollection = chartHelpers.toChartData(items, filters, label, backgroundColor)
           console.log('dataCollection: ', dataCollection)

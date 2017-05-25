@@ -3,7 +3,7 @@
     <v-card-title>Charts</v-card-title>
     <v-card-row>
       <v-card-text>
-        <bar-chart :chart-data="chartData.dataCollection" :options="chartData.options"></bar-chart>
+        <bar-chart :chart-data="chartData.dataCollection" :options="options"></bar-chart>
       </v-card-text>
     </v-card-row>
   </v-card>
@@ -35,7 +35,33 @@ export default {
           }
         ]
       },
-      options: { responsive: true, maintainAspectRatio: false }
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        legend: {
+          display: true,
+          position: 'top',
+          labels: {
+            fontSize: 14
+          }
+        },
+        scales: {
+          xAxes: [{
+            ticks: {
+              beginAtZero: true,
+              min: 0,
+              suggestedMin: 0
+            }
+          }],
+          yAxes: [{
+            ticks: {
+              beginAtZero: true,
+              min: 0,
+              suggestedMin: 0
+            }
+          }]
+        }
+      }
     }
   },
   computed: {
