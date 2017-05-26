@@ -29,16 +29,16 @@
           <span class="white--text pl-1" v-text="building"></span>
           <v-spacer></v-spacer>
           <v-btn class="indigo--text" @click.native="navigateTo('/tables')">See Data Tables</v-btn>
-          <v-btn class="indigo--text">See Charts</v-btn>
+          <v-btn class="indigo--text" @click.native="navigateTo('/charts')">See Charts</v-btn>
         </v-card-row>
       </v-card-text>
       <!--<v-divider></v-divider>-->
       <v-card-row actions class="blue-grey darken-1">
-        <v-switch label="Calendar" cl v-model="enableCalendar" light></v-switch>
-        <v-layout v-if="enableCalendar">
-          <v-menu lazy :close-on-content-click="false" v-model="startDatePicker" transition="v-scale-transition" class="pa-0 ma-0" light>
-            <v-text-field slot="activator" label="Start Date" v-model="startDateEntry" prepend-icon="event" class="white--text" light readonly></v-text-field>
-            <v-date-picker v-model="startDateEntry" no-title scrollable actions>
+        <v-switch label="Calendar" class="pr-4" v-model="enableCalendar" light></v-switch>
+        <v-layout class="ml-4" v-if="enableCalendar">
+          <v-menu lazy :close-on-content-click="false" v-model="startDatePicker" transition="v-scale-transition" class="ml-4" light>
+            <v-text-field slot="activator" label="Start Date" v-model="startDateEntry" :hint="startDateEntryFormatted" prepend-icon="event" class="white--text" light readonly persistent-hint></v-text-field>
+            <v-date-picker v-model="startDateEntry" :date-format="date => new Date(date).toDateString()" :formatted-value.sync="startDateEntryFormatted" no-title scrollable actions>
               <template scope="{ save, cancel }">
                 <v-card-row actions>
                   <v-btn flat primary @click.native="cancel()">Cancel</v-btn>
@@ -48,8 +48,8 @@
             </v-date-picker>
           </v-menu>
           <v-menu lazy :close-on-content-click="false" v-model="endDatePicker" transition="v-scale-transition" class="pa-0 ma-0" light>
-            <v-text-field slot="activator" label="End Date" v-model="endDateEntry" prepend-icon="event" class="white--text" light readonly></v-text-field>
-            <v-date-picker v-model="endDateEntry" no-title scrollable actions>
+            <v-text-field slot="activator" label="End Date" :hint="endDateEntryFormatted" v-model="endDateEntry" prepend-icon="event" class="white--text" light readonly persistent-hint></v-text-field>
+            <v-date-picker v-model="endDateEntry" :date-format="date => new Date(date).toDateString()" :formatted-value.sync="endDateEntryFormatted" no-title scrollable actions>
               <template scope="{ save, cancel }">
                 <v-card-row actions>
                   <v-btn flat primary @click.native="cancel()">Cancel</v-btn>
@@ -100,6 +100,13 @@ export default {
       period: tableHelpers.durationFormatter('Today'),
       dataAvailable: false,
       enableCalendar: false,
+      startDateEntry: null,
+      startDateEntryFormatted: null,
+      endDateEntry: null,
+      endDateEntryFormatted: null,
+      startDatePicker: false,
+      endDatePicker: false,
+      timePeriod: null,
       dialog: {
         model: false,
         title: 'Area Selected',
@@ -114,10 +121,6 @@ export default {
         '4th Floor'
       ],
       title: 'Map',
-      startDateEntry: null,
-      endDateEntry: null,
-      startDatePicker: false,
-      endDatePicker: false,
       timePeriods: [
         'Today',
         'Yesterday',
@@ -129,12 +132,19 @@ export default {
         'Last Year',
         'All'
       ],
-      timePeriod: null,
       floorPlansBasemap: null,
       spaceAssessmentFeatureLayer: null
     }
   },
   watch: {
+    '$route'(to, from, next) {
+      console.log('router: ', { to, from, next })
+      this.startDateEntry = this.calendar.startDateEntry
+      this.startDateEntryFormatted = this.calendar.startDateEntryFormatted
+      this.endDateEntry = this.calendar.endDateEntry
+      this.endDateEntryFormatted = this.calendar.endDateEntryFormatted
+      this.timePeriod = this.calendar.timePeriod
+    },
     token(value) {
       this.setMapLayers(value, this.selelectedFloor)
     },
@@ -143,17 +153,28 @@ export default {
     },
     timePeriod(value) {
       this.period = tableHelpers.durationFormatter(value)
+      console.log('set period: ', value);
+      this.setCalendar({ timePeriod: value })
     },
     startDateEntry(value) {
       this.period.start = moment.utc(value).format()
+      this.setCalendar({ startDateEntry: value })
     },
     endDateEntry(value) {
       this.period.end = moment.utc(value).format()
+      this.setCalendar({ endDateEntry: value })
+    },
+    startDateEntryFormatted(value) {
+      this.setCalendar({ startDateEntryFormatted: value })
+    },
+    endDateEntryFormatted(value) {
+      this.setCalendar({ endDateEntryFormatted: value })
     }
   },
   computed: {
     ...mapGetters({
-      token: 'getToken'
+      token: 'getToken',
+      calendar: 'getCalendar'
     }),
     floor() {
       return this.selectedFloor.substring(0, 3)
@@ -167,7 +188,8 @@ export default {
     ...mapMutations({
       setDataTable: 'setDataTable',
       setRoomLocation: 'setRoomLocation',
-      setChartData: 'setChartData'
+      setChartData: 'setChartData',
+      setCalendar: 'setCalendar'
     }),
     navigateTo(to) {
       router.push(to)

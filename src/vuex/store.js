@@ -17,10 +17,11 @@ const state = {
   token: token,
   navigation: {
     sidebar: false,
-    mapDialog: false,
+    mapDialog: false
   },
   map: {
     floor: 1,
+    selectedFloor: null,
     building: '1st Floor Library',
     roomLocation: '',
     featureLayers: [],
@@ -29,7 +30,7 @@ const state = {
   datatable: {
     tableTitle: {
       title: '',
-      subtitle: '',
+      subtitle: ''
     },
     headers: [],
     items: []
@@ -37,14 +38,16 @@ const state = {
   chartData: {
     dataCollection: {},
     options: {}
+  },
+  calendar: {
+    startDateEntry: null,
+    startDateEntryFormatted: null,
+    endDateEntry: null,
+    endDateEntryFormatted: null,
+    timePeriod: null
   }
 };
 
-const store = new Vuex.Store({
-  state,
-  actions,
-  mutations,
-  getters
-});
+const store = new Vuex.Store({state, actions, mutations, getters});
 
 export default store;

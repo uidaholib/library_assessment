@@ -6,6 +6,9 @@ const USER_DATA_TOKEN_KEY = 'arcgis_user_data_token_key'
 const ARCGIS_TOKEN_URL = 'https://www.arcgis.com/sharing/generateToken'
 const ARCGIS_PORTAL_URL = 'https://www.arcgis.com/sharing/rest/portals/self'
 
+const TOKEN_ENDPOINT = 'https://www.arcgis.com/sharing/rest/oauth2/token/'
+const AUTHORIZATION_ENDPOINT = 'https://www.arcgis.com/sharing/rest/oauth2/authorize'
+
 const router = new Router({mode: 'history'})
 
 function generateToken(credentials) {
@@ -76,9 +79,10 @@ function login(credentials) {
       })
     });
   } else {
-    console.log('user is not authenticated. Trying authentication')    
+    console.log('user is not authenticated. Trying authentication')
     return generateToken(credentials).then(response => {
       setAccessToken(response.token)
+      console.log('access token: ', response.token)
       return response.token
     })
       .then(token => getUserData(token))

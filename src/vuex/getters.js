@@ -32,5 +32,8 @@ export default {
   },
   getChartData(state) {
     return state.chartData
+  },
+  getCalendar(state) {
+    return state.calendar
   }
 }

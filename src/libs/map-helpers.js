@@ -64,7 +64,6 @@ function queryRelatedField(event, period, featureLayer, buildingTitle) {
           .forEach(b => {
             filters.push({name: b.use, field: 'use', value: 'numberOfUsers'})
           })
-        console.log('response: ', response)
         const dataCollection = chartHelpers.toChartData(items, filters, label, backgroundColor)
         store.commit('setChartData', {dataCollection, options})
         store.commit('setDataTable', {tableTitle, headers, items})

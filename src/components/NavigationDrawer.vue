@@ -36,18 +36,24 @@
     <v-toolbar fixed class="indigo darken-4">
       <v-toolbar-side-icon light @click.native.stop="drawer = !drawer"></v-toolbar-side-icon>
       <v-toolbar-title v-text="title" class="text-xs-left"></v-toolbar-title>
-       <v-toolbar-items>
+      <v-toolbar-items>
         <v-toolbar-item ripple v-if="user">
           <v-btn icon light>
             <v-icon>account_circle</v-icon>
           </v-btn>
           {{user.lastName}}
         </v-toolbar-item>
-        <v-toolbar-item ripple @click.native.stop="logout" v-if="user">
+        <v-toolbar-item ripple @click.native.stop="signOut" v-if="user">
           <v-btn icon light>
             <v-icon>power_settings_new</v-icon>
           </v-btn>
-          Logout
+          LOGOUT
+        </v-toolbar-item>
+        <v-toolbar-item ripple @click.native.stop="signIn" v-else>
+          <v-btn icon light>
+            <v-icon>person</v-icon>
+          </v-btn>
+          LOGIN
         </v-toolbar-item>
       </v-toolbar-items>
     </v-toolbar>
@@ -104,6 +110,12 @@ export default {
     },
     navigateTo(to) {
       router.push(to)
+    },
+    signIn() {
+      window.esriSiginIn()
+    },
+    signOut() {
+      window.esriSignOut()
     }
   }
 }

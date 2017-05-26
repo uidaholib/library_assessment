@@ -23,21 +23,38 @@ export default {
     state.map.floor = floor
   },
   addFeatureLayer(state, payload) {
-    let fl = esri.featureLayer({url: payload.url, token: payload.token, where: payload.where})
+    let fl = esri.featureLayer({
+      url: payload.url,
+      token: payload.token,
+      where: payload.where
+    })
     // fl.addTo(payload.map)
     state
       .map
       .featureLayers
-      .push({id: payload.id, title: payload.title, feautureLayer: fl})
+      .push({
+        id: payload.id,
+        title: payload.title,
+        feautureLayer: fl
+      })
   },
   addBasemap(state, payload) {
     console.log('map: ', payload.map);
-    let basemap = esri.tiledMapLayer({url: payload.url, token: payload.token, maxZoom: payload.maxZoom, minZoom: payload.minZoom})
+    let basemap = esri.tiledMapLayer({
+      url: payload.url,
+      token: payload.token,
+      maxZoom: payload.maxZoom,
+      minZoom: payload.minZoom
+    })
     // basemap.addTo(payload.map)
     state
       .map
       .basemaps
-      .push({id: payload.id, title: payload.title, basemap: basemap})
+      .push({
+        id: payload.id,
+        title: payload.title,
+        basemap: basemap
+      })
   },
   setDataTable(state, payload) {
     state.datatable.tableTitle = payload.tableTitle
@@ -55,5 +72,9 @@ export default {
   },
   setChartData(state, chartData) {
     state.chartData = chartData
+  },
+  setCalendar(state, payload) {
+    state.calendar = Object.assign(state.calendar, payload)
+    console.log('setting calendar: ', state.calendar)
   }
 }

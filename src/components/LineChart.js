@@ -1,8 +1,11 @@
-import { Line } from 'vue-chartjs'
+import { Line, mixins } from 'vue-chartjs'
+
+const { reactiveProp } = mixins
 
 export default Line.extend({
-  props: ['data', 'options'],
-  mounted () {
-    this.renderChart(this.data, this.options)
+  mixins: [reactiveProp],
+  props: ['options'],
+  mounted() {
+    this.renderChart(this.chartData, this.options)
   }
 })

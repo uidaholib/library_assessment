@@ -52,7 +52,6 @@ export default {
     }
   },
   mounted() {
-    console.log('items: ', this.items);
   }
 }
 </script>

@@ -25,8 +25,6 @@ function aggregateFields(items, filter) {
   const filtered = items.filter(item => item[filter.field] === filter.name).map(item => item[filter.value])
   const total = filtered.reduce((prev, curr) => prev + curr, 0)
   const name = filter.name
-  console.log('filtered: ', filtered)
-  console.log('total: ', total)
   return {name, total}
 }
 
