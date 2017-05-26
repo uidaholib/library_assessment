@@ -1,5 +1,5 @@
-// filters = [{name: 'Individual Studying', field: 'use', value: 'numberOfUsers'},
-// ...]
+// filters = [{name: 'Individual Studying', field: 'use', value:
+// 'numberOfUsers'}, ...]
 function toChartData(items, filters, label, backgroundColor) {
   let data = []
   let labels = []
@@ -8,7 +8,14 @@ function toChartData(items, filters, label, backgroundColor) {
     labels.push(item.name)
     data.push(item.total)
   })
-  const datasets = [{label, backgroundColor, data}]
+  const fill = false
+  const datasets = [
+    {
+      label,
+      backgroundColor,
+      data
+    }
+  ]
   const dataCollection = {
     labels,
     datasets
