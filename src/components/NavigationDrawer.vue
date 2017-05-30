@@ -43,7 +43,7 @@
           </v-btn>
           {{user.lastName}}
         </v-toolbar-item>
-        <v-toolbar-item ripple @click.native.stop="signOut" v-if="user">
+        <v-toolbar-item ripple @click.native.stop="logout" v-if="user">
           <v-btn icon light>
             <v-icon>power_settings_new</v-icon>
           </v-btn>

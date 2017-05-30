@@ -26,20 +26,20 @@ const routes = [
     path: '/home',
     name: 'home',
     component: Home,
-    // beforeEnter: auth.requireAuth
+    beforeEnter: auth.requireAuth
     // beforeEnter: auth.checkLoginStatus
   },
   {
     path: '/charts',
     name: 'charts',
     component: Charts,
-    // beforeEnter: auth.requireAuth
+    beforeEnter: auth.requireAuth
   },
    {
     path: '/tables',
     name: 'tables',
     component: Tables,
-    // beforeEnter: auth.requireAuth
+    beforeEnter: auth.requireAuth
   }
 ]
 
