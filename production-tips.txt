@@ -1,0 +1,4 @@
+1 - upload files in '/dist' on static file server
+2 - remove folders 'js' & 'css' from '/dist/static' and put them under root directory '/' where 'index.html' is.
+3 - edit 'index.html':
+  * change src of 'js' and 'css' files location by removing '/static/' in the location string 

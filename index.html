@@ -6,8 +6,8 @@
   <title>Library Assessment</title>
   <link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' rel="stylesheet" type="text/css">
   <link href="https://unpkg.com/vuetify/dist/vuetify.min.css" rel="stylesheet" type="text/css">
-  <!--<link rel="stylesheet" href="https://js.arcgis.com/3.20compact/dijit/themes/claro/claro.css">-->
-<!--
+  <link rel="stylesheet" href="https://js.arcgis.com/3.20compact/dijit/themes/claro/claro.css">
+
   <script src="https://js.arcgis.com/3.20compact/"></script>
   <script>
     require([
@@ -40,7 +40,7 @@
 
       window.esriSiginIn = function(){
         esriId.getCredential(info.portalUrl + "/sharing");
-      } 
+      }
 
       window.esriSignOut = function () {
         esriId.destroyCredentials();
@@ -51,12 +51,12 @@
       function displayItems() {
         new arcgisPortal.Portal(info.portalUrl).signIn().then(
           function (portalUser) {
-            console.log("Signed in to the portal: ", portalUser);
+            console.log('Signed in to the portal: ', portalUser);
             queryPortal(portalUser);
           }
         ).otherwise(
           function (error) {
-            console.log("Error occurred while signing in: ", error);
+            console.log('Error occurred while signing in: ', error);
           }
         );
       }
@@ -67,18 +67,19 @@
         //See list of valid item types here:  http://www.arcgis.com/apidocs/rest/index.html?itemtypes.html
         //See search reference here:  http://www.arcgis.com/apidocs/rest/index.html?searchreference.html
         var queryParams = {
-          q: "owner:" + portalUser.username,
+          q: 'owner:' + portalUser.username,
           sortField: "numViews",
           sortOrder: "desc",
           num: 20
         };
 
-        portal.queryItems(queryParams).then(createGallery);
+        portal.queryItems(queryParams).then(function(data){
+          console.log('query data: ', data)
+        });
       }
-
     });
 
-  </script>-->
+  </script>
 </head>
 
 <body>
