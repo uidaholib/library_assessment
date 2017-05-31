@@ -71,7 +71,8 @@
 <script>
 import { mapGetters } from 'vuex'
 import router from '../router'
-import auth from '../services/auth'
+import oauth2 from '../services/oauth2.js'
+
 export default {
   data() {
     return {
@@ -112,7 +113,9 @@ export default {
       router.push(to)
     },
     signIn() {
-      window.esriSiginIn()
+      // window.esriSiginIn()
+      console.log('oauth2: ', oauth2)
+      oauth2.oauth()
     },
     signOut() {
       window.esriSignOut()

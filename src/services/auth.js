@@ -1,5 +1,6 @@
 import Router from 'vue-router'
 import esri from 'esri-leaflet'
+import store from '../vuex/store'
 
 const ACCESS_TOKEN_KEY = 'arcgis_access_token_key'
 const USER_DATA_TOKEN_KEY = 'arcgis_user_data_token_key'
@@ -117,9 +118,10 @@ function checkAuth(to, from, next) {
   console.log('clear data');
 }
 
-export default {
+const auth = {
   login,
   logout,
+  checkAuth,
   isLoggedIn,
   requireAuth,
   getAccessToken,
@@ -128,3 +130,5 @@ export default {
   clearUserDataToken,
   clearAccessToken
 }
+
+export default auth

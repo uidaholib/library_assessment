@@ -15,7 +15,6 @@
 <script>
 import { mapGetters } from 'vuex'
 import router from '../router'
-import auth from '../services/auth'
 import Map from './Map'
 import Table from './Tables'
 import Chart from './Charts'

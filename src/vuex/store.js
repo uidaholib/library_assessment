@@ -3,18 +3,21 @@ import Vuex from 'vuex';
 import actions from './actions';
 import getters from './getters'
 import mutations from './mutations'
-import auth from '../services/auth'
 import esri from 'esri-leaflet'
+import auth from '../services/auth'
 
 Vue.use(Vuex);
 
-const token = auth.getAccessToken()
+console.log('auth: ', auth);
+console.log('actions: ', actions);
+
+// const token = auth.getAccessToken()
 const floor = 1
 
 const state = {
-  isAuthenticated: auth.isLoggedIn(),
-  user: auth.getUserDataToken(),
-  token: token,
+  isAuthenticated: false,
+  user: null,
+  token: null,
   navigation: {
     sidebar: false,
     mapDialog: false

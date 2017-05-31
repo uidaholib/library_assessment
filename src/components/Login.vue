@@ -37,7 +37,7 @@ export default {
   },
   methods: {
     login() {
-      console.log('token: ', auth.getAccessToken(), '\nuser: ', auth.getUserDataToken())
+      // console.log('token: ', auth.getAccessToken(), '\nuser: ', auth.getUserDataToken())
       const expiration = 20160
       const credentials = {
         username: this.username,

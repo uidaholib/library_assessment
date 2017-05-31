@@ -6,6 +6,9 @@ export default {
   setToken(state, token) {
     state.token = token
   },
+  setAuthentication(state, value) {
+    state.isAuthenticated = value
+  },
   login(state) {
     state.isAuthenticated = true
   },

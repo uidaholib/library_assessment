@@ -20,14 +20,14 @@ const routes = [
   //   path: '/',
   //   name: 'login',
   //   component: Login,
-  //   beforeEnter: auth.checkAuth
+  //   // beforeEnter: auth.checkAuth
   // },
   {
     path: '/',
     name: 'home',
-    component: Home,
+    component: Home
     // beforeEnter: auth.requireAuth
-    beforeEnter: auth.checkLoginStatus
+    // beforeEnter: auth.checkLoginStatus
   },
   {
     path: '/charts',
