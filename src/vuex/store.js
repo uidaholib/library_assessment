@@ -8,9 +8,6 @@ import auth from '../services/auth'
 
 Vue.use(Vuex);
 
-console.log('auth: ', auth);
-console.log('actions: ', actions);
-
 // const token = auth.getAccessToken()
 const floor = 1
 

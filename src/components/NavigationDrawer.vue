@@ -9,7 +9,7 @@
               <v-icon v-else>account_circle</v-icon>
             </v-list-tile-avatar>
             <v-list-tile-content>
-              <v-list-tile-title v-text="user.lastName"></v-list-tile-title>
+              <v-list-tile-title v-text="user.fullName"></v-list-tile-title>
             </v-list-tile-content>
             <v-list-tile-action>
               <v-btn icon @click.native.stop="mini = !mini">
@@ -41,9 +41,9 @@
           <v-btn icon light>
             <v-icon>account_circle</v-icon>
           </v-btn>
-          {{user.lastName}}
+          {{user.fullName.split()[0]}}
         </v-toolbar-item>
-        <v-toolbar-item ripple @click.native.stop="signOut" v-if="user">
+        <v-toolbar-item ripple @click.native.stop="signOut" v-if="false">
           <v-btn icon light>
             <v-icon>power_settings_new</v-icon>
           </v-btn>
@@ -79,15 +79,11 @@ export default {
       appSidebar: true,
       title: 'LIBRARY ASSESSMENT',
       navItems: [
-        { title: 'Map', to: '/home', icon: 'map', isActive: true },
+        { title: 'Map', to: '/', icon: 'map', isActive: true },
         { title: 'Charts', to: '/charts', icon: 'show_chart', isActive: false },
         { title: 'Tables', to: '/tables', icon: 'grid_on', isActive: false }
       ],
       drawer: true,
-      items: [
-        { title: 'Home', icon: 'dashboard' },
-        { title: 'About', icon: 'question_answer' }
-      ],
       mini: false,
       right: null
     }
@@ -114,11 +110,10 @@ export default {
     },
     signIn() {
       // window.esriSiginIn()
-      console.log('oauth2: ', oauth2)
       oauth2.oauth()
     },
     signOut() {
-      window.esriSignOut()
+      // window.esriSignOut()
     }
   }
 }

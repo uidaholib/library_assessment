@@ -1,6 +1,6 @@
-import Router from 'vue-router'
 import esri from 'esri-leaflet'
 import store from '../vuex/store'
+import router from '../router'
 
 //--------Handle signing into ArcGIS Online to get a token--------
 var clientID = 'TKLwzwlNqJgTIYnf';
@@ -29,6 +29,8 @@ window.oauthCallback = function (token) {
       console.log('response: ', response)
       store.commit('setToken', token)
       store.commit('setAuthentication', true)
+      store.commit('setUser', response.user)
+      router.push('/')
     });
 }
 

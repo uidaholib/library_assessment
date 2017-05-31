@@ -9,33 +9,24 @@ Vue.use(Router)
 
 const scrollBehavior = (to, from, savedPosition) => {
   if (to.hash) {
-    return {
-      selector: to.hash
-    }
+    return {selector: to.hash}
   }
 }
 
 const routes = [
-  // {
-  //   path: '/',
-  //   name: 'login',
-  //   component: Login,
-  //   // beforeEnter: auth.checkAuth
-  // },
+  // {   path: '/',   name: 'login',   component: Login,   // beforeEnter:
+  // auth.checkAuth },
   {
     path: '/',
     name: 'home',
     component: Home
-    // beforeEnter: auth.requireAuth
-    // beforeEnter: auth.checkLoginStatus
-  },
-  {
+    // beforeEnter: auth.requireAuth beforeEnter: auth.checkLoginStatus
+  }, {
     path: '/charts',
     name: 'charts',
     component: Charts
     // beforeEnter: auth.requireAuth
-  },
-   {
+  }, {
     path: '/tables',
     name: 'tables',
     component: Tables
@@ -43,4 +34,8 @@ const routes = [
   }
 ]
 
-export default new Router({mode: 'history', scrollBehavior, routes})
+export default new Router({
+  // mode: 'history',
+  scrollBehavior,
+  routes
+})

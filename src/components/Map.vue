@@ -148,6 +148,9 @@ export default {
     token(value) {
       this.setMapLayers(value, this.selelectedFloor)
     },
+    authentication(value) {
+      this.setMapLayers(this.token, this.selelectedFloor)
+    },
     selectedFloor(value) {
       this.setMapLayers(this.token, value)
     },
@@ -174,7 +177,8 @@ export default {
   computed: {
     ...mapGetters({
       token: 'getToken',
-      calendar: 'getCalendar'
+      calendar: 'getCalendar',
+      authentication: 'getAuthentication'
     }),
     floor() {
       return this.selectedFloor.substring(0, 3)
@@ -196,7 +200,7 @@ export default {
     },
     see(link) {
       this.dialog.model = false
-      router.push('/home#' + link.toLowerCase())
+      router.push(link.toLowerCase())
     },
     setFloorPlansBasemap(token, maxZoom, minZoom, floor) {
       this.floorPlansBasemap = esri.tiledMapLayer({
@@ -221,8 +225,8 @@ export default {
       })
     },
     setMapLayers(tokenValue, floorValue) {
-      const floor = floorValue.substring(0, 3)
-      const floorLvl = floorValue.charAt()
+      const floor = (floorValue) ? floorValue.substring(0, 3) : '1st'
+      const floorLvl = (floorValue) ? floorValue.charAt() : 1
       this.map.removeLayer(this.floorPlansBasemap)
       this.map.removeLayer(this.spaceAssessmentFeatureLayer)
       this.setSpaceAssessmentFeatureLayer(tokenValue, floorLvl)
