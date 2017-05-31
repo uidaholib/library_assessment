@@ -45,12 +45,13 @@ function queryRelatedField(event, period, featureLayer, buildingTitle) {
     .endOf('month')
     .format()
   const expr = "EditDate between '" + period.start + "' AND '" + period.end + "'"
+
   query(featureLayer)
     .objectIds([event.layer.feature.id])
     .relationshipId('0')
     .definitionExpression(expr)
     .run((error, response, raw) => {
-      if (response.features.length !== 0) {
+      if (response !== null && response.features) {
         const items = tableHelpers.getItemsFromQuery(response)
         const space = tableHelpers.getRoomLocationFromQuery(response)
         const tableTitle = {
@@ -69,6 +70,11 @@ function queryRelatedField(event, period, featureLayer, buildingTitle) {
         store.commit('setDataTable', {tableTitle, headers, items})
         return response
       } else {
+        store.commit('setChartData', {
+          dataCollection: null,
+          options
+        })
+        store.commit('setDataTable', {tableTitle: 'No data available for this selection', headers, items: null})
         return null
       }
     })

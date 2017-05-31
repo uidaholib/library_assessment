@@ -49,7 +49,7 @@
           </v-btn>
           LOGOUT
         </v-toolbar-item>
-        <v-toolbar-item ripple @click.native.stop="signIn" v-else>
+        <v-toolbar-item ripple @click.native.stop="signIn" v-if="!isAuthenticated">
           <v-btn icon light>
             <v-icon>person</v-icon>
           </v-btn>

@@ -200,7 +200,7 @@ export default {
     },
     see(link) {
       this.dialog.model = false
-      router.push(link.toLowerCase())
+      router.push('/home#' + link.toLowerCase())
     },
     setFloorPlansBasemap(token, maxZoom, minZoom, floor) {
       this.floorPlansBasemap = esri.tiledMapLayer({
@@ -220,8 +220,11 @@ export default {
       }).addTo(this.map)
       this.spaceAssessmentFeatureLayer.on('click', e => {
         const response = mapHelpers.queryRelatedField(e, this.period, this.spaceAssessmentFeatureLayer, this.building)
-        this.dialog.model = true
-        this.dataAvailable = (response !== 0)
+        // this.dialog.model = true
+        this.dataAvailable = (response !== null)
+        if (response === null) {
+          alert('No data availabale for this selection!')
+        }
       })
     },
     setMapLayers(tokenValue, floorValue) {
