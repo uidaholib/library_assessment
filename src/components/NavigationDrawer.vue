@@ -35,7 +35,7 @@
     </v-navigation-drawer>
     <v-toolbar fixed class="indigo darken-4">
       <v-toolbar-side-icon light @click.native.stop="drawer = !drawer"></v-toolbar-side-icon>
-      <v-toolbar-title v-text="title" class="text-xs-left"></v-toolbar-title>
+      <v-toolbar-title v-text="title" class="text-xs-left white--text"></v-toolbar-title>
       <v-toolbar-items>
         <v-toolbar-item ripple v-if="user">
           <v-btn icon light>
@@ -53,7 +53,7 @@
           <v-btn icon light>
             <v-icon>person</v-icon>
           </v-btn>
-          LOGIN
+          <span class="white--text">LOGIN</span>
         </v-toolbar-item>
       </v-toolbar-items>
     </v-toolbar>
