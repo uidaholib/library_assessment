@@ -82,9 +82,9 @@ export default {
       title: 'LIBRARY ASSESSMENT',
       navItems: [
         // { title: 'Map', to: '/', icon: 'map', isActive: true },
-        { title: 'Map', to: '/home', icon: 'map', isActive: true, display: true },
-        { title: 'Charts', to: '/charts', icon: 'show_chart', isActive: false, display: this.user },
-        { title: 'Tables', to: '/tables', icon: 'grid_on', isActive: false, display: this.user }
+        { title: 'Map', to: 'app-map', icon: 'map', isActive: true, display: true },
+        { title: 'Tables', to: 'building-table', icon: 'grid_on', isActive: false, display: this.user },
+        { title: 'Charts', to: 'building-chart', icon: 'show_chart', isActive: false, display: this.user }
       ],
       drawer: true,
       mini: false,
@@ -112,7 +112,7 @@ export default {
         })
       }
       else {
-         this.navItems.forEach((item, i) => {
+        this.navItems.forEach((item, i) => {
           if (i >= 1) {
             item.display = false
           }
@@ -125,7 +125,7 @@ export default {
       this.$store.commit('logout')
     },
     navigateTo(to) {
-      router.push(to)
+      router.push('#' + to)
     },
     signIn() {
       oauth2.oauth()

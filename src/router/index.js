@@ -40,7 +40,7 @@ const routes = [{
 ]
 
 export default new Router({
-  // mode: 'history',
+  mode: 'history',
   scrollBehavior,
   routes
 })

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="app-map">
     <v-card>
       <v-card-row class="blue-grey darken-1">
         <v-card-title>
