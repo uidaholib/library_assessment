@@ -35,13 +35,15 @@
     </v-navigation-drawer>
     <v-toolbar fixed class="indigo darken-4">
       <v-toolbar-side-icon light @click.native.stop="drawer = !drawer"></v-toolbar-side-icon>
-      <v-toolbar-title v-text="title" class="text-xs-left white--text"></v-toolbar-title>
+      <v-toolbar-title>
+        <h5 class="text-xs-left white--text pt-3">{{title}}</h5>
+      </v-toolbar-title>
       <v-toolbar-items>
         <v-toolbar-item ripple v-if="user">
           <v-btn icon light>
             <v-icon>account_circle</v-icon>
           </v-btn>
-          {{user.fullName.split()[0]}}
+          <span class="white--text">{{user.fullName.split()[0]}}</span>
         </v-toolbar-item>
         <v-toolbar-item ripple @click.native.stop="signOut" v-if="false">
           <v-btn icon light>
@@ -79,7 +81,8 @@ export default {
       appSidebar: true,
       title: 'LIBRARY ASSESSMENT',
       navItems: [
-        { title: 'Map', to: '/', icon: 'map', isActive: true },
+        // { title: 'Map', to: '/', icon: 'map', isActive: true },
+        { title: 'Map', to: '/home', icon: 'map', isActive: true },
         { title: 'Charts', to: '/charts', icon: 'show_chart', isActive: false },
         { title: 'Tables', to: '/tables', icon: 'grid_on', isActive: false }
       ],
@@ -109,11 +112,9 @@ export default {
       router.push(to)
     },
     signIn() {
-      // window.esriSiginIn()
       oauth2.oauth()
     },
     signOut() {
-      // window.esriSignOut()
     }
   }
 }

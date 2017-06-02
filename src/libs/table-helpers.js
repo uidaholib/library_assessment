@@ -235,9 +235,10 @@ function getItemsFromQuery(response) {
   const features = response.features
   const properties = features.map(feature => feature.properties)
   properties.forEach(item => {
+    const date = moment(item.CreationDate).format()
     results.push({
       value: false,
-      date: dateFormatter(item.CreationDate),
+      date: date,
       use: buildingUseFormatter(item.TYPE_OF_USAGE),
       numberOfUsers: item.NUMBER_OF_USERS
     })

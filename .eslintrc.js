@@ -48,6 +48,8 @@ module.exports = {
     // allow braces style
     "brace-style": 0,
     // allow no useless escape
-    "no-useless-escape": 0
+    "no-useless-escape": 0,
+    // allow new-cap
+    "new-cap": 0
   }
 }

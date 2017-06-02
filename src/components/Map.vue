@@ -20,19 +20,14 @@
               </v-list>
             </v-menu>
           </div>
+          <v-btn icon="icon" v-if="mapToggled" @click.native.prevent="toggleMap" class="white--text">
+            <v-icon>expand_less</v-icon>
+          </v-btn>
+          <v-btn v-else icon="icon" @click.native.prevent="toggleMap" class="white--text">
+            <v-icon>expand_more</v-icon>
+          </v-btn>
         </v-card-title>
       </v-card-row>
-      <v-card-text class="pa-0">
-        <v-card-row height="400px" width="100%" id="map" class="pa-0 ma-0">
-        </v-card-row>
-        <v-card-row height="50px" class="grey pa-1">
-          <span class="white--text pl-1" v-text="building"></span>
-          <v-spacer></v-spacer>
-          <v-btn class="indigo--text" @click.native="navigateTo('/tables')">See Data Tables</v-btn>
-          <v-btn class="indigo--text" @click.native="navigateTo('/charts')">See Charts</v-btn>
-        </v-card-row>
-      </v-card-text>
-      <!--<v-divider></v-divider>-->
       <v-card-row actions class="blue-grey darken-1">
         <v-switch label="Calendar" class="pr-4" v-model="enableCalendar" light></v-switch>
         <v-layout class="ml-4" v-if="enableCalendar">
@@ -60,8 +55,21 @@
           </v-menu>
         </v-layout>
         <v-select v-else class="white--text" v-bind:items="timePeriods" v-model="timePeriod" label="Time Period" light single-line auto></v-select>
-        <v-select class="white--text" v-bind:items="floors" v-model="selectedFloor" label="Floor" light single-line auto></v-select>
+        <v-select class="white--text" v-bind:items="buildings" v-model="selectedBuilding" label="Building" light single-line auto></v-select>
+        <v-select class="white--text" v-if="selectedBuilding" v-bind:items="floors" v-model="selectedFloor" label="Floor" light single-line auto></v-select>
       </v-card-row>
+      <v-card-text class="pa-0" v-show="mapToggled">
+        <v-card-row height="400px" width="100%" id="map" class="pa-0 ma-0">
+        </v-card-row>
+        <v-card-row height="50px" class="grey pa-1">
+          <span class="white--text pl-1" v-text="building"></span>
+          <v-spacer></v-spacer>
+          <v-btn class="indigo--text" @click.native="navigateTo('/tables')">See Data Tables</v-btn>
+          <v-btn class="indigo--text" @click.native="navigateTo('/charts')">See Charts</v-btn>
+        </v-card-row>
+      </v-card-text>
+      <!--<v-divider></v-divider>-->
+  
     </v-card>
     <v-dialog v-model="dialog.model" persistent>
       <v-card>
@@ -96,6 +104,7 @@ export default {
     let map
     return {
       map: null,
+      mapToggled: false,
       selectedFloor: null,
       period: tableHelpers.durationFormatter('Today'),
       dataAvailable: false,
@@ -114,6 +123,11 @@ export default {
         error: 'No data available for this selection',
         actions: ['Chart', 'Table']
       },
+      buildings: [
+        'Library',
+        'College of Education'
+      ],
+      selectedBuilding: null,
       floors: [
         '1st Floor',
         '2nd Floor',
@@ -172,6 +186,17 @@ export default {
     },
     endDateEntryFormatted(value) {
       this.setCalendar({ endDateEntryFormatted: value })
+    },
+    selectedBuilding(value) {
+      this.mapToggled = true
+      if (!this.map) {
+        this.map = L.map('map').setView([46.7274, -117.0144], 19)
+      }
+      const floor = (this.selectedFloor) ? (this.selectedFloor.substring(0, 3)) : '1st'
+      const floorLvl = (this.selectedFloor) ? (this.selectedFloor.charAt()) : 1
+      esri.basemapLayer('Topographic').addTo(this.map)
+      this.setFloorPlansBasemap(this.token, 19, 16, floor)
+      this.setSpaceAssessmentFeatureLayer(this.token, floorLvl)
     }
   },
   computed: {
@@ -195,6 +220,19 @@ export default {
       setChartData: 'setChartData',
       setCalendar: 'setCalendar'
     }),
+    toggleMap() {
+      this.mapToggled = !this.mapToggled
+      if (!this.mapToggled) {
+        if (!this.map) {
+          this.map = L.map('map').setView([46.7274, -117.0144], 19)
+        }
+        const floor = (this.selectedFloor) ? (this.selectedFloor.substring(0, 3)) : '1st'
+        const floorLvl = (this.selectedFloor) ? (this.selectedFloor.charAt()) : 1
+        esri.basemapLayer('Topographic').addTo(this.map)
+        this.setFloorPlansBasemap(this.token, 19, 16, floor)
+        this.setSpaceAssessmentFeatureLayer(this.token, floorLvl)
+      }
+    },
     navigateTo(to) {
       router.push(to)
     },
@@ -239,12 +277,13 @@ export default {
   created() {
   },
   mounted() {
-    const floor = '1st'
-    const floorLvl = 1
-    this.map = L.map('map').setView([46.7274, -117.0144], 19)
-    esri.basemapLayer('Topographic').addTo(this.map)
-    this.setFloorPlansBasemap(this.token, 19, 16, floor)
-    this.setSpaceAssessmentFeatureLayer(this.token, floorLvl)
+    // this.map = null
+    // const floor = '1st'
+    // const floorLvl = 1
+    // this.map = L.map('map').setView([46.7274, -117.0144], 19)
+    // esri.basemapLayer('Topographic').addTo(this.map)
+    // this.setFloorPlansBasemap(this.token, 19, 16, floor)
+    // this.setSpaceAssessmentFeatureLayer(this.token, floorLvl)
   }
 }
 </script>

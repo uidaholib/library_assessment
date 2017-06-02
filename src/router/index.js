@@ -9,15 +9,20 @@ Vue.use(Router)
 
 const scrollBehavior = (to, from, savedPosition) => {
   if (to.hash) {
-    return {selector: to.hash}
+    return {
+      selector: to.hash
+    }
   }
 }
 
-const routes = [
-  // {   path: '/',   name: 'login',   component: Login,   // beforeEnter:
-  // auth.checkAuth },
-  {
+const routes = [{
     path: '/',
+    name: 'login',
+    component: Login,
+  },
+  {
+    // path: '/',
+    path: '/home',
     name: 'home',
     component: Home
     // beforeEnter: auth.requireAuth beforeEnter: auth.checkLoginStatus

@@ -16,7 +16,7 @@
           </span>
         </template>
         <template slot="items" scope="props">
-          <td class="text-xs-left">{{ props.item.date }}</td>
+          <td class="text-xs-left" v-tooltip:top="{ html: toDate(props.item.date) }">{{ props.item.date | formatDate }}</td>
           <td class="text-xs-right">{{ props.item.use }}</td>
           <td class="text-xs-right">{{ props.item.numberOfUsers }}</td>
         </template>
@@ -27,6 +27,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import moment from 'moment'
 
 export default {
   data() {
@@ -51,7 +52,20 @@ export default {
       return this.datatable.items
     }
   },
+  methods: {
+    tableSorter(values) {
+      console.log('values')
+    },
+    toDate(value) {
+      return moment(value).utc().format('dddd, MMM Do YYYY, h:mm a')
+    }
+  },
   mounted() {
+  },
+  filters: {
+    formatDate(value) {
+      return moment(value).format('DD/MM/YYYY')
+    }
   }
 }
 </script>
