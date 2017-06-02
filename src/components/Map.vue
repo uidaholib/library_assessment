@@ -220,7 +220,7 @@ export default {
     },
     building() {
       const floor = (this.selectedFloor) ? this.selectedFloor : '1st Floor'
-      return floor + ' Library'
+      return floor + ' ' + this.selectedBuilding
     }
   },
   methods: {
