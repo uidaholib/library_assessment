@@ -141,7 +141,10 @@ export default {
         'All'
       ],
       floorPlansBasemap: null,
-      spaceAssessmentFeatureLayer: null
+      spaceAssessmentFeatureLayer: null,
+      libraryLocation: [46.7274, -117.0144],
+      collEdLocation: [46.72585122069073, -117.01240709420746],
+      location: null,
     }
   },
   watch: {
@@ -164,7 +167,11 @@ export default {
         this.mapToggled = true
         setTimeout(() => {
           if (!this.map) {
-            this.map = L.map('map').setView([46.7274, -117.0144], 19)
+            this.map = L.map('map').setView(this.location, 19)
+            this.map.on('moveend', e => {
+              console.log('event: ', e)
+              console.log('map center: ', this.map.getCenter())
+            })
           }
           const floor = (this.selectedFloor) ? (this.selectedFloor.substring(0, 3)) : '1st'
           const floorLvl = (this.selectedFloor) ? (this.selectedFloor.charAt()) : 1
@@ -196,7 +203,10 @@ export default {
       this.setCalendar({ endDateEntryFormatted: value })
     },
     selectedBuilding(value) {
-
+      this.location = (value === 'Library') ? this.libraryLocation : this.collEdLocation
+      if (this.map) {
+        this.map.setView(this.location, 19)
+      }
     }
   },
   computed: {

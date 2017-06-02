@@ -15,7 +15,8 @@ const scrollBehavior = (to, from, savedPosition) => {
   }
 }
 
-const routes = [{
+const routes = [
+  {
     path: '/',
     name: 'login',
     component: Login,
