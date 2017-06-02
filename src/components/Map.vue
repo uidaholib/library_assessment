@@ -58,8 +58,8 @@
         <v-card-row height="50px" class="grey pa-1">
           <span class="white--text pl-1" v-text="building"></span>
           <v-spacer></v-spacer>
-          <v-btn class="indigo--text" @click.native="navigateTo('/tables')">See Data Tables</v-btn>
-          <v-btn class="indigo--text" @click.native="navigateTo('/charts')">See Charts</v-btn>
+          <v-btn class="indigo--text" @click.native="navigateTo('building-table')">See Data Tables</v-btn>
+          <v-btn class="indigo--text" @click.native="navigateTo('building-chart')">See Charts</v-btn>
         </v-card-row>
       </v-card-text>
       <!--<v-divider></v-divider>-->
@@ -221,7 +221,7 @@ export default {
       setCalendar: 'setCalendar'
     }),
     navigateTo(to) {
-      router.push(to)
+      router.push('#' + to)
     },
     see(link) {
       this.dialog.model = false

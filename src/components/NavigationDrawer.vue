@@ -22,7 +22,7 @@
       <v-list class="pt-0" dense>
         <v-divider></v-divider>
         <v-list-item v-for="item in navItems" :key="item" @click="navigateTo(item.to)">
-          <v-list-tile ripple>
+          <v-list-tile ripple v-if="item.display">
             <v-list-tile-action>
               <v-icon>{{ item.icon }}</v-icon>
             </v-list-tile-action>
@@ -82,9 +82,9 @@ export default {
       title: 'LIBRARY ASSESSMENT',
       navItems: [
         // { title: 'Map', to: '/', icon: 'map', isActive: true },
-        { title: 'Map', to: '/home', icon: 'map', isActive: true },
-        { title: 'Charts', to: '/charts', icon: 'show_chart', isActive: false },
-        { title: 'Tables', to: '/tables', icon: 'grid_on', isActive: false }
+        { title: 'Map', to: '/home', icon: 'map', isActive: true, display: true },
+        { title: 'Charts', to: '/charts', icon: 'show_chart', isActive: false, display: this.user },
+        { title: 'Tables', to: '/tables', icon: 'grid_on', isActive: false, display: this.user }
       ],
       drawer: true,
       mini: false,
@@ -101,6 +101,22 @@ export default {
     isAuthenticated(value) {
       if (!value) {
         router.push('/')
+      }
+    },
+    user(value) {
+      if (value) {
+        this.navItems.forEach((item, i) => {
+          if (i >= 1) {
+            item.display = true
+          }
+        })
+      }
+      else {
+         this.navItems.forEach((item, i) => {
+          if (i >= 1) {
+            item.display = false
+          }
+        })
       }
     }
   },

@@ -8,7 +8,6 @@ var accessToken;
 var callbacks = [];
 var protocol = window.location.protocol;
 var callbackPage = protocol + '//gis-dev.northwestknowledge.net/koffi/oauth/callback.html';
-console.log('callbackPage: ', callbackPage);
 
 // this function will open a window and start the oauth process
 function oauth(callback) {
@@ -26,7 +25,6 @@ window.oauthCallback = function (token) {
   esri.get('https://www.arcgis.com/sharing/rest/portals/self', {
       token: token
     }, function (error, response) {
-      console.log('response: ', response)
       store.commit('setToken', token)
       store.commit('setAuthentication', true)
       store.commit('setUser', response.user)
