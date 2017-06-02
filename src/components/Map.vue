@@ -20,12 +20,6 @@
               </v-list>
             </v-menu>
           </div>
-          <v-btn icon="icon" v-if="mapToggled" @click.native.prevent="toggleMap" class="white--text">
-            <v-icon>expand_less</v-icon>
-          </v-btn>
-          <v-btn v-else icon="icon" @click.native.prevent="toggleMap" class="white--text">
-            <v-icon>expand_more</v-icon>
-          </v-btn>
         </v-card-title>
       </v-card-row>
       <v-card-row actions class="blue-grey darken-1">
@@ -59,7 +53,7 @@
         <v-select class="white--text" v-if="selectedBuilding" v-bind:items="floors" v-model="selectedFloor" label="Floor" light single-line auto></v-select>
       </v-card-row>
       <v-card-text class="pa-0" v-show="mapToggled">
-        <v-card-row height="400px" width="100%" id="map" class="pa-0 ma-0">
+        <v-card-row height="400px" width="100%" id="map" class="pa-0 ma-0" v-if="mapToggled">
         </v-card-row>
         <v-card-row height="50px" class="grey pa-1">
           <span class="white--text pl-1" v-text="building"></span>
@@ -166,11 +160,25 @@ export default {
       this.setMapLayers(this.token, this.selelectedFloor)
     },
     selectedFloor(value) {
-      this.setMapLayers(this.token, value)
+      if (!this.mapToggled) {
+        this.mapToggled = true
+        setTimeout(() => {
+          if (!this.map) {
+            this.map = L.map('map').setView([46.7274, -117.0144], 19)
+          }
+          const floor = (this.selectedFloor) ? (this.selectedFloor.substring(0, 3)) : '1st'
+          const floorLvl = (this.selectedFloor) ? (this.selectedFloor.charAt()) : 1
+          esri.basemapLayer('Topographic').addTo(this.map)
+          this.setFloorPlansBasemap(this.token, 19, 16, floor)
+          this.setSpaceAssessmentFeatureLayer(this.token, floorLvl)
+        }, 100)
+      }
+      else {
+        this.setMapLayers(this.token, value)
+      }
     },
     timePeriod(value) {
       this.period = tableHelpers.durationFormatter(value)
-      console.log('set period: ', value);
       this.setCalendar({ timePeriod: value })
     },
     startDateEntry(value) {
@@ -188,15 +196,7 @@ export default {
       this.setCalendar({ endDateEntryFormatted: value })
     },
     selectedBuilding(value) {
-      this.mapToggled = true
-      if (!this.map) {
-        this.map = L.map('map').setView([46.7274, -117.0144], 19)
-      }
-      const floor = (this.selectedFloor) ? (this.selectedFloor.substring(0, 3)) : '1st'
-      const floorLvl = (this.selectedFloor) ? (this.selectedFloor.charAt()) : 1
-      esri.basemapLayer('Topographic').addTo(this.map)
-      this.setFloorPlansBasemap(this.token, 19, 16, floor)
-      this.setSpaceAssessmentFeatureLayer(this.token, floorLvl)
+
     }
   },
   computed: {
@@ -220,19 +220,6 @@ export default {
       setChartData: 'setChartData',
       setCalendar: 'setCalendar'
     }),
-    toggleMap() {
-      this.mapToggled = !this.mapToggled
-      if (!this.mapToggled) {
-        if (!this.map) {
-          this.map = L.map('map').setView([46.7274, -117.0144], 19)
-        }
-        const floor = (this.selectedFloor) ? (this.selectedFloor.substring(0, 3)) : '1st'
-        const floorLvl = (this.selectedFloor) ? (this.selectedFloor.charAt()) : 1
-        esri.basemapLayer('Topographic').addTo(this.map)
-        this.setFloorPlansBasemap(this.token, 19, 16, floor)
-        this.setSpaceAssessmentFeatureLayer(this.token, floorLvl)
-      }
-    },
     navigateTo(to) {
       router.push(to)
     },

@@ -69,7 +69,6 @@ export default {
       const subLabel = label.substring(0, index)
       const words = subLabel.split(' ')
       const filtered = words.filter(s => s !== '/')
-      console.log('filtered: ', filtered);
     }
   },
   watch: {
@@ -86,16 +85,11 @@ export default {
         return filtered
       }
       if (obj && obj.labels && obj.datasets) {
-        console.log('object: ', obj)
-        console.log('size: ', size)
         const labels = obj.labels.map(label => {
           const filtered = formatLabel(label)
-          console.log('filtered: ', filtered)
           return filtered
         })
         const datasets = obj.datasets
-        console.log('datasets: ', datasets)
-        console.log(labels)
         let newObject = { datasets, labels }
         return newObject
       }

@@ -42,7 +42,6 @@ export default {
       })
   },
   addBasemap(state, payload) {
-    console.log('map: ', payload.map);
     let basemap = esri.tiledMapLayer({
       url: payload.url,
       token: payload.token,
@@ -78,6 +77,5 @@ export default {
   },
   setCalendar(state, payload) {
     state.calendar = Object.assign(state.calendar, payload)
-    console.log('setting calendar: ', state.calendar)
   }
 }

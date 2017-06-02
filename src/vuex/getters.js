@@ -9,7 +9,6 @@ export default {
     return state.isAuthenticated
   },
   getSidebar(state) {
-    console.log('get sidebar: ', state.navigation.sidebar);
     return state.navigation.sidebar
   },
   getFloor(state) {

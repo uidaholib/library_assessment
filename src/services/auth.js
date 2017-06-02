@@ -68,7 +68,6 @@ function clearUserDataToken() {
 // send a request to the login URL and save the returned JWT
 function login(credentials) {
   if (isLoggedIn()) {
-    console.log('user is authenticated')
     return new Promise((resolve, reject) => {
       const token = getAccessToken()
       setAccessToken(token)
@@ -80,10 +79,8 @@ function login(credentials) {
       })
     });
   } else {
-    console.log('user is not authenticated. Trying authentication')
     return generateToken(credentials).then(response => {
       setAccessToken(response.token)
-      console.log('access token: ', response.token)
       return response.token
     })
       .then(token => getUserData(token))
@@ -105,7 +102,6 @@ function logout() {
 
 function requireAuth(to, from, next) {
   if (!isLoggedIn()) {
-    console.log('authentication failed!')
     next({path: '/'})
   } else {
     next()
@@ -115,7 +111,6 @@ function requireAuth(to, from, next) {
 function checkAuth(to, from, next) {
   clearAccessToken()
   clearUserDataToken()
-  console.log('clear data');
 }
 
 const auth = {

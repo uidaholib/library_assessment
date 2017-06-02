@@ -53,11 +53,8 @@ export default {
     }
   },
   methods: {
-    tableSorter(values) {
-      console.log('values')
-    },
     toDate(value) {
-      return moment(value).utc().format('dddd, MMM Do YYYY, h:mm a')
+      return moment(value).utc().format('ddd, MMM Do YYYY, h:mm a')
     }
   },
   mounted() {
