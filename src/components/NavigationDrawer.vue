@@ -35,10 +35,10 @@
     </v-navigation-drawer>
     <v-toolbar fixed class="indigo darken-4">
       <v-toolbar-side-icon light @click.native.stop="drawer = !drawer"></v-toolbar-side-icon>
-      <v-toolbar-title>
-        <h5 class="text-xs-left white--text pt-3">{{title}}</h5>
+      <v-toolbar-title class="pa-0 ma-0">
+        <h6 class="text-xs-left white--text pt-3">{{title | uppercase}}</h6>
       </v-toolbar-title>
-      <v-toolbar-items>
+      <v-toolbar-items class="pa-0 ma-0">
         <v-toolbar-item ripple v-if="user">
           <v-btn icon light>
             <v-icon>account_circle</v-icon>
@@ -55,7 +55,7 @@
           <v-btn icon light>
             <v-icon>person</v-icon>
           </v-btn>
-          <span class="white--text">LOGIN</span>
+          <h6 class="white--text pt-3">LOGIN</h6>
         </v-toolbar-item>
       </v-toolbar-items>
     </v-toolbar>
@@ -79,7 +79,7 @@ export default {
   data() {
     return {
       appSidebar: true,
-      title: 'LIBRARY ASSESSMENT',
+      title: 'Library Space Assessment',
       navItems: [
         // { title: 'Map', to: '/', icon: 'map', isActive: true },
         { title: 'Map', to: 'app-map', icon: 'map', isActive: true, display: true },
@@ -131,6 +131,11 @@ export default {
       oauth2.oauth()
     },
     signOut() {
+    }
+  },
+  filters: {
+    uppercase(value) {
+      return value.toUpperCase()
     }
   }
 }

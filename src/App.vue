@@ -17,6 +17,7 @@ export default {
 </script>
 
 <style>
+/*@import "https://unpkg.com/vuetify/dist/vuetify.min.css";*/
 
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;

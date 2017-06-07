@@ -1,3 +1,4 @@
+import L from 'leaflet'
 import esri from 'esri-leaflet'
 import router from '../router'
 import store from '../vuex/store'
@@ -32,7 +33,7 @@ const options = {
   maintainAspectRatio: false
 }
 
-function queryRelatedField(event, period, featureLayer, buildingTitle) {
+function queryRelatedField(map, event, period, featureLayer, buildingTitle) {
   const building = tableHelpers.buildingNameFormatter(event.layer.feature.properties.BldgName)
   const dStart = moment
     .utc()
@@ -44,7 +45,22 @@ function queryRelatedField(event, period, featureLayer, buildingTitle) {
     .subtract(1, 'months')
     .endOf('month')
     .format()
-  const expr = "EditDate between '" + period.start + "' AND '" + period.end + "'"
+
+    console.log('range date: ', period);
+
+  const expr = "EditDate between '" + moment(period[0]).utc().format() + "' AND '" + moment(period[1]).utc().format() + "'"
+
+  const styles = {
+    weight: 4,
+    color: 'red',
+    dashArray: '',
+    fillOpacity: 0.3
+  }
+
+  event
+    .layer
+    .setStyle(styles)
+  console.log('event: ', event)
 
   query(featureLayer)
     .objectIds([event.layer.feature.id])
@@ -74,7 +90,11 @@ function queryRelatedField(event, period, featureLayer, buildingTitle) {
           dataCollection: null,
           options
         })
-        store.commit('setDataTable', {tableTitle: 'No data available for this selection', headers, items: null})
+        store.commit('setDataTable', {
+          tableTitle: 'No data available for this selection',
+          headers,
+          items: null
+        })
         return null
       }
     })

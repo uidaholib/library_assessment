@@ -7,8 +7,18 @@ import VueResource from 'vue-resource'
 import Vuetify from 'vuetify'
  import store from './vuex/store'
 import './assets/animate.css'
+import { DatePicker } from 'element-ui'
+import lang from 'element-ui/lib/locale/lang/en'
+import locale from 'element-ui/lib/locale'
+
+// configure language
+locale.use(lang)
+
+Vue.component(DatePicker.name, DatePicker)
+
 
 Vue.config.productionTip = false
+Vue.config.devtools = true
 Vue.use(VueResource);
 Vue.use(Vuetify)
 

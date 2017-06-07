@@ -40,11 +40,7 @@ const state = {
     options: {}
   },
   calendar: {
-    startDateEntry: null,
-    startDateEntryFormatted: null,
-    endDateEntry: null,
-    endDateEntryFormatted: null,
-    timePeriod: null
+    dateRange: null
   }
 };
 

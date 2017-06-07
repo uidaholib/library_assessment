@@ -23,32 +23,9 @@
         </v-card-title>
       </v-card-row>
       <v-card-row actions class="blue-grey darken-1">
-        <v-switch label="Calendar" class="pr-4" v-model="enableCalendar" light></v-switch>
-        <v-layout class="ml-4" v-if="enableCalendar">
-          <v-menu lazy :close-on-content-click="false" v-model="startDatePicker" transition="v-scale-transition" class="ml-4" light>
-            <v-text-field slot="activator" label="Start Date" v-model="startDateEntry" :hint="startDateEntryFormatted" prepend-icon="event" class="white--text" light readonly persistent-hint></v-text-field>
-            <v-date-picker v-model="startDateEntry" :date-format="date => new Date(date).toDateString()" :formatted-value.sync="startDateEntryFormatted" no-title scrollable actions>
-              <template scope="{ save, cancel }">
-                <v-card-row actions>
-                  <v-btn flat primary @click.native="cancel()">Cancel</v-btn>
-                  <v-btn flat primary @click.native="save()">Save</v-btn>
-                </v-card-row>
-              </template>
-            </v-date-picker>
-          </v-menu>
-          <v-menu lazy :close-on-content-click="false" v-model="endDatePicker" transition="v-scale-transition" class="pa-0 ma-0" light>
-            <v-text-field slot="activator" label="End Date" :hint="endDateEntryFormatted" v-model="endDateEntry" prepend-icon="event" class="white--text" light readonly persistent-hint></v-text-field>
-            <v-date-picker v-model="endDateEntry" :date-format="date => new Date(date).toDateString()" :formatted-value.sync="endDateEntryFormatted" no-title scrollable actions>
-              <template scope="{ save, cancel }">
-                <v-card-row actions>
-                  <v-btn flat primary @click.native="cancel()">Cancel</v-btn>
-                  <v-btn flat primary @click.native="save()">Save</v-btn>
-                </v-card-row>
-              </template>
-            </v-date-picker>
-          </v-menu>
-        </v-layout>
-        <v-select v-else class="white--text" v-bind:items="timePeriods" v-model="timePeriod" label="Time Period" light single-line auto></v-select>
+        <span class="pa-1 mb-3">
+          <daterange-picker :dateRange="dateRange"></daterange-picker>
+        </span>
         <v-select class="white--text" v-bind:items="buildings" v-model="selectedBuilding" label="Building" light single-line auto></v-select>
         <v-select class="white--text" v-if="selectedBuilding" v-bind:items="floors" v-model="selectedFloor" label="Floor" light single-line auto></v-select>
       </v-card-row>
@@ -91,6 +68,7 @@ import { mapGetters, mapMutations } from 'vuex'
 import query from '../libs/EsriLeafletRelated.js'
 import mapHelpers from '../libs/map-helpers.js'
 import tableHelpers from '../libs/table-helpers.js'
+import DaterangePicker from './DaterangePicker'
 
 export default {
   name: 'map',
@@ -100,16 +78,8 @@ export default {
       map: null,
       mapToggled: false,
       selectedFloor: null,
-      period: tableHelpers.durationFormatter('Today'),
       dataAvailable: false,
-      enableCalendar: false,
-      startDateEntry: null,
-      startDateEntryFormatted: null,
-      endDateEntry: null,
-      endDateEntryFormatted: null,
-      startDatePicker: false,
-      endDatePicker: false,
-      timePeriod: null,
+      dateRange: null,
       dialog: {
         model: false,
         title: 'Area Selected',
@@ -144,17 +114,11 @@ export default {
       spaceAssessmentFeatureLayer: null,
       libraryLocation: [46.7274, -117.0144],
       collEdLocation: [46.72585122069073, -117.01240709420746],
-      location: null,
+      location: null
     }
   },
   watch: {
     '$route'(to, from, next) {
-      console.log('router: ', { to, from, next })
-      this.startDateEntry = this.calendar.startDateEntry
-      this.startDateEntryFormatted = this.calendar.startDateEntryFormatted
-      this.endDateEntry = this.calendar.endDateEntry
-      this.endDateEntryFormatted = this.calendar.endDateEntryFormatted
-      this.timePeriod = this.calendar.timePeriod
     },
     token(value) {
       this.setMapLayers(value, this.selelectedFloor)
@@ -168,10 +132,6 @@ export default {
         setTimeout(() => {
           if (!this.map) {
             this.map = L.map('map').setView(this.location, 19)
-            this.map.on('moveend', e => {
-              console.log('event: ', e)
-              console.log('map center: ', this.map.getCenter())
-            })
           }
           const floor = (this.selectedFloor) ? (this.selectedFloor.substring(0, 3)) : '1st'
           const floorLvl = (this.selectedFloor) ? (this.selectedFloor.charAt()) : 1
@@ -183,24 +143,6 @@ export default {
       else {
         this.setMapLayers(this.token, value)
       }
-    },
-    timePeriod(value) {
-      this.period = tableHelpers.durationFormatter(value)
-      this.setCalendar({ timePeriod: value })
-    },
-    startDateEntry(value) {
-      this.period.start = moment.utc(value).format()
-      this.setCalendar({ startDateEntry: value })
-    },
-    endDateEntry(value) {
-      this.period.end = moment.utc(value).format()
-      this.setCalendar({ endDateEntry: value })
-    },
-    startDateEntryFormatted(value) {
-      this.setCalendar({ startDateEntryFormatted: value })
-    },
-    endDateEntryFormatted(value) {
-      this.setCalendar({ endDateEntryFormatted: value })
     },
     selectedBuilding(value) {
       this.location = (value === 'Library') ? this.libraryLocation : this.collEdLocation
@@ -254,12 +196,8 @@ export default {
         where: 'Floor = ' + floorLvl
       }).addTo(this.map)
       this.spaceAssessmentFeatureLayer.on('click', e => {
-        const response = mapHelpers.queryRelatedField(e, this.period, this.spaceAssessmentFeatureLayer, this.building)
-        // this.dialog.model = true
+        const response = mapHelpers.queryRelatedField(this.map, e, this.calendar.dateRange, this.spaceAssessmentFeatureLayer, this.building)
         this.dataAvailable = (response !== null)
-        if (response === null) {
-          alert('No data availabale for this selection!')
-        }
       })
     },
     setMapLayers(tokenValue, floorValue) {
@@ -274,13 +212,10 @@ export default {
   created() {
   },
   mounted() {
-    // this.map = null
-    // const floor = '1st'
-    // const floorLvl = 1
-    // this.map = L.map('map').setView([46.7274, -117.0144], 19)
-    // esri.basemapLayer('Topographic').addTo(this.map)
-    // this.setFloorPlansBasemap(this.token, 19, 16, floor)
-    // this.setSpaceAssessmentFeatureLayer(this.token, floorLvl)
+
+  },
+  components: {
+    'daterange-picker': DaterangePicker
   }
 }
 </script>
