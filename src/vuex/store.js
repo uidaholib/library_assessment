@@ -25,7 +25,8 @@ const state = {
     building: '1st Floor Library',
     roomLocation: '',
     featureLayers: [],
-    basemaps: []
+    basemaps: [],
+    layer: null
   },
   datatable: {
     tableTitle: {

@@ -23,10 +23,10 @@
         </v-card-title>
       </v-card-row>
       <v-card-row actions class="blue-grey darken-1">
-        <span class="pa-1 mb-3">
+        <span class="pa-1 mb-3 mr-3">
           <daterange-picker :dateRange="dateRange"></daterange-picker>
         </span>
-        <v-select class="white--text" v-bind:items="buildings" v-model="selectedBuilding" label="Building" light single-line auto></v-select>
+        <v-select class="white--text mr-3" v-bind:items="buildings" v-model="selectedBuilding" label="Building" light single-line auto></v-select>
         <v-select class="white--text" v-if="selectedBuilding" v-bind:items="floors" v-model="selectedFloor" label="Floor" light single-line auto></v-select>
       </v-card-row>
       <v-card-text class="pa-0" v-show="mapToggled">
@@ -48,11 +48,17 @@
           <v-card-title v-text="dialog.title"></v-card-title>
         </v-card-row>
         <v-card-row>
-          <v-card-text class="text-xs-left" v-text="dialog.text"></v-card-text>
+          <v-card-text class="text-xs-left" v-if="dataAvailable" v-text="dialog.text"></v-card-text>
+          <v-card-text class="text-xs-left" v-else v-text="dialog.error"></v-card-text>
         </v-card-row>
         <v-card-row>
-          <a class="btn" href="#building-table" @click="dialog.model = false">Table</a>
-          <a class="btn" href="#building-table" @click="dialog.model = false">Chart</a>
+          <div v-if="dataAvailable">
+            <a class="btn primary white--text" href="#building-table" @click="dialog.model = false">TABLE</a>
+            <a class="btn primary white--text" href="#building-table" @click="dialog.model = false">CHART</a>
+          </div>
+          <div v-else>
+            <v-btn primary light @click.native="dialog.model = false">CLOSE</v-btn>
+          </div>
         </v-card-row>
       </v-card>
     </v-dialog>
@@ -80,6 +86,7 @@ export default {
       selectedFloor: null,
       dataAvailable: false,
       dateRange: null,
+      selectedLayer: null,
       dialog: {
         model: false,
         title: 'Area Selected',
@@ -99,17 +106,6 @@ export default {
         '4th Floor'
       ],
       title: 'Map',
-      timePeriods: [
-        'Today',
-        'Yesterday',
-        'This Week',
-        'Last Week',
-        'This Month',
-        'Last Month',
-        'This Year',
-        'Last Year',
-        'All'
-      ],
       floorPlansBasemap: null,
       spaceAssessmentFeatureLayer: null,
       libraryLocation: [46.7274, -117.0144],
@@ -196,8 +192,12 @@ export default {
         where: 'Floor = ' + floorLvl
       }).addTo(this.map)
       this.spaceAssessmentFeatureLayer.on('click', e => {
-        const response = mapHelpers.queryRelatedField(this.map, e, this.calendar.dateRange, this.spaceAssessmentFeatureLayer, this.building)
-        this.dataAvailable = (response !== null)
+        mapHelpers.queryRelatedField(this.map, this.selectedLayer, e, this.calendar.dateRange, this.spaceAssessmentFeatureLayer, this.building)
+          .then(response => {
+            this.dataAvailable = response
+            this.dialog.model = true
+            this.selectedLayer = e.layer
+          })
       })
     },
     setMapLayers(tokenValue, floorValue) {

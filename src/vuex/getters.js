@@ -34,5 +34,8 @@ export default {
   },
   getCalendar(state) {
     return state.calendar
+  },
+  getLayer(state) {
+    return state.map.layer
   }
 }

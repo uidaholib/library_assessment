@@ -77,5 +77,8 @@ export default {
   },
   setCalendar(state, payload) {
     state.calendar = Object.assign(state.calendar, payload)
+  },
+  setLayer(state, layer) {
+    state.map.layer = layer
   }
 }

@@ -57,7 +57,7 @@ export default {
       return this.datatable.tableTitle
     },
     dataAvailable() {
-      if (this.datatable) {
+      if (this.datatable && this.datatable.items) {
         return this.datatable.items.length !== 0
       }
       return false

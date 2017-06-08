@@ -33,22 +33,19 @@ const options = {
   maintainAspectRatio: false
 }
 
-function queryRelatedField(map, event, period, featureLayer, buildingTitle) {
+function queryRelatedField(map, selectedLayer, event, period, featureLayer, buildingTitle) {
+  if (period === null) {
+    return new Promise((resolve, reject) => {
+      resolve(false)
+    })
+  }
+
   const building = tableHelpers.buildingNameFormatter(event.layer.feature.properties.BldgName)
-  const dStart = moment
+  const expr = "EditDate between '" + moment(period[0])
     .utc()
-    .subtract(1, 'months')
-    .startOf('month')
-    .format()
-  const dEnd = moment
+    .format() + "' AND '" + moment(period[1])
     .utc()
-    .subtract(1, 'months')
-    .endOf('month')
-    .format()
-
-    console.log('range date: ', period);
-
-  const expr = "EditDate between '" + moment(period[0]).utc().format() + "' AND '" + moment(period[1]).utc().format() + "'"
+    .format() + "'"
 
   const styles = {
     weight: 4,
@@ -56,48 +53,60 @@ function queryRelatedField(map, event, period, featureLayer, buildingTitle) {
     dashArray: '',
     fillOpacity: 0.3
   }
-
+  if (selectedLayer) {
+    const selectedStyle = {
+      color: '#3388ff',
+      strokeOpacity: 0.5,
+      strokeWidth: 0.2,
+      strokeLinecap: 'round',
+      strokeLinejoin: 'round',
+      fill: '#3388ff',
+      fillOpacity: 0.2,
+      fillRule: 'evenodd'
+    }
+    selectedLayer.setStyle(selectedStyle)
+  }
   event
     .layer
     .setStyle(styles)
-  console.log('event: ', event)
-
-  query(featureLayer)
-    .objectIds([event.layer.feature.id])
-    .relationshipId('0')
-    .definitionExpression(expr)
-    .run((error, response, raw) => {
-      if (response !== null && response.features) {
-        const items = tableHelpers.getItemsFromQuery(response)
-        const space = tableHelpers.getRoomLocationFromQuery(response)
-        const tableTitle = {
-          title: buildingTitle,
-          subtitle: space + ' Space Usage'
-        }
-        const aggregated = chartHelpers.aggregateFields(items, filter)
-        let filters = []
-        tableHelpers
-          .BUILDING_USES
-          .forEach(b => {
-            filters.push({name: b.use, field: 'use', value: 'numberOfUsers'})
+  return new Promise((resolve, reject) => {
+    query(featureLayer)
+      .objectIds([event.layer.feature.id])
+      .relationshipId('0')
+      .definitionExpression(expr)
+      .run((error, response, raw) => {
+        if (response.features.length !== 0) {
+          const items = tableHelpers.getItemsFromQuery(response)
+          const space = tableHelpers.getRoomLocationFromQuery(response)
+          const tableTitle = {
+            title: buildingTitle,
+            subtitle: space + ' Space Usage'
+          }
+          const aggregated = chartHelpers.aggregateFields(items, filter)
+          let filters = []
+          tableHelpers
+            .BUILDING_USES
+            .forEach(b => {
+              filters.push({name: b.use, field: 'use', value: 'numberOfUsers'})
+            })
+          const dataCollection = chartHelpers.toChartData(items, filters, label, backgroundColor)
+          store.commit('setChartData', {dataCollection, options})
+          store.commit('setDataTable', {tableTitle, headers, items})
+          resolve(true)
+        } else {
+          store.commit('setChartData', {
+            dataCollection: null,
+            options
           })
-        const dataCollection = chartHelpers.toChartData(items, filters, label, backgroundColor)
-        store.commit('setChartData', {dataCollection, options})
-        store.commit('setDataTable', {tableTitle, headers, items})
-        return response
-      } else {
-        store.commit('setChartData', {
-          dataCollection: null,
-          options
-        })
-        store.commit('setDataTable', {
-          tableTitle: 'No data available for this selection',
-          headers,
-          items: null
-        })
-        return null
-      }
-    })
+          store.commit('setDataTable', {
+            tableTitle: 'No data available for this selection',
+            headers,
+            items: null
+          })
+          resolve(false)
+        }
+      })
+  })
 }
 
 export default {

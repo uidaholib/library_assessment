@@ -1,5 +1,5 @@
 <template>
-  <v-card class="mt-4" v-if="items.length !== 0">
+  <v-card class="mt-4" v-if="available">
     <v-card-title>
       <h5>{{tableTitle.title}}</h5>
       <v-spacer></v-spacer>
@@ -50,6 +50,9 @@ export default {
     },
     items() {
       return this.datatable.items
+    },
+    available() {
+      return (this.items && this.items.length)
     }
   },
   methods: {
@@ -61,7 +64,7 @@ export default {
   },
   filters: {
     formatDate(value) {
-      return moment(value).format('DD/MM/YYYY')
+      return moment(value).format('MM/DD/YYYY')
     }
   }
 }

@@ -1,5 +1,5 @@
 <template>
-  <el-date-picker v-model="rangeValue" type="daterange" align="left" placeholder="Pick a range" :picker-options="pickerOptions">
+  <el-date-picker v-model="rangeValue" type="daterange" align="left" placeholder="Date Range" :picker-options="pickerOptions" :format="format">
   </el-date-picker>
 </template>
 
@@ -12,6 +12,7 @@ export default {
   props: ['dateRange'],
   data() {
     return {
+      format: 'yyyy/MM/dd', 
       pickerOptions: {
         shortcuts: [
           {
@@ -47,27 +48,41 @@ export default {
               start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
               picker.$emit('pick', [start, end]);
             }
-          }, {
-            text: 'Last 3 months',
+          },
+          {
+            text: 'Last Year',
             onClick(picker) {
               const end = new Date();
               const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 365);
               picker.$emit('pick', [start, end]);
             }
-          }]
+          },
+          {
+            text: 'All',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 365 * 100);
+              picker.$emit('pick', [start, end]);
+            }
+          }
+        ]
       },
       rangeValue: ''
     };
   },
   methods: {
-   ...mapMutations({
+    ...mapMutations({
       setCalendar: 'setCalendar'
     }),
+    formatDate(value) {
+      return moment(value).format('DD/MM/YYYY')
+    }
   },
   watch: {
     rangeValue(value) {
-      this.setCalendar({dateRange: value})
+      this.setCalendar({ dateRange: value })
     }
   }
 }
