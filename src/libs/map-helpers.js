@@ -34,19 +34,6 @@ const options = {
 }
 
 function queryRelatedField(map, selectedLayer, event, period, featureLayer, buildingTitle) {
-  if (period === null) {
-    return new Promise((resolve, reject) => {
-      resolve(false)
-    })
-  }
-
-  const building = tableHelpers.buildingNameFormatter(event.layer.feature.properties.BldgName)
-  const expr = "EditDate between '" + moment(period[0])
-    .utc()
-    .format() + "' AND '" + moment(period[1])
-    .utc()
-    .format() + "'"
-
   const styles = {
     weight: 4,
     color: 'red',
@@ -69,6 +56,23 @@ function queryRelatedField(map, selectedLayer, event, period, featureLayer, buil
   event
     .layer
     .setStyle(styles)
+  if (period === null) {
+    return new Promise((resolve, reject) => {
+      resolve(false)
+    })
+  } else if ((period[0] === null) && (period[1] === null)) {
+    return new Promise((resolve, reject) => {
+      resolve(false)
+    })
+  }
+
+  const building = tableHelpers.buildingNameFormatter(event.layer.feature.properties.BldgName)
+  const expr = "EditDate between '" + moment(period[0])
+    .utc()
+    .format() + "' AND '" + moment(period[1])
+    .utc()
+    .format() + "'"
+
   return new Promise((resolve, reject) => {
     query(featureLayer)
       .objectIds([event.layer.feature.id])
