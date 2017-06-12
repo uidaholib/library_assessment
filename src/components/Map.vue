@@ -54,7 +54,7 @@
         <v-card-row>
           <div v-if="dataAvailable">
             <a class="btn primary white--text" href="#building-table" @click="dialog.model = false">TABLE</a>
-            <a class="btn primary white--text" href="#building-table" @click="dialog.model = false">CHART</a>
+            <a class="btn primary white--text" href="#building-chart" @click="dialog.model = false">CHART</a>
           </div>
           <div v-else>
             <v-btn primary light @click.native="dialog.model = false">CLOSE</v-btn>
@@ -144,6 +144,9 @@ export default {
       this.location = (value === 'Library') ? this.libraryLocation : this.collEdLocation
       if (this.map) {
         this.map.setView(this.location, 19)
+      }
+      if (value === 'College of Education') {
+        this.selectedFloor = '3rd Floor'
       }
     }
   },

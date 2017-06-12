@@ -1,6 +1,6 @@
 <template>
   <v-app id="navigation-drawer">
-    <v-navigation-drawer class="grey lighten-4" persistent light :mini-variant.sync="mini" v-model="drawer">
+    <v-navigation-drawer class="grey lighten-4" temporary light :mini-variant.sync="mini" v-model="drawer">
       <v-list class="pa-0">
         <v-list-item v-if="user">
           <v-list-tile avatar tag="div" ripple>
@@ -45,17 +45,11 @@
           </v-btn>
           <span class="white--text">{{user.fullName.split()[0]}}</span>
         </v-toolbar-item>
-        <v-toolbar-item ripple @click.native.stop="signOut" v-if="false">
-          <v-btn icon light>
-            <v-icon>power_settings_new</v-icon>
-          </v-btn>
-          LOGOUT
-        </v-toolbar-item>
         <v-toolbar-item ripple @click.native.stop="signIn" v-if="!isAuthenticated">
           <v-btn icon light>
             <v-icon>person</v-icon>
           </v-btn>
-          <h6 class="white--text pt-3">LOGIN</h6>
+          <h6 class="white--text pt-3">SIGN IN</h6>
         </v-toolbar-item>
       </v-toolbar-items>
     </v-toolbar>
@@ -79,14 +73,14 @@ export default {
   data() {
     return {
       appSidebar: true,
-      title: 'Library Space Assessment',
+      title: 'Space Assessment Dashboard',
       navItems: [
         // { title: 'Map', to: '/', icon: 'map', isActive: true },
         { title: 'Map', to: 'app-map', icon: 'map', isActive: true, display: true },
         { title: 'Tables', to: 'building-table', icon: 'grid_on', isActive: false, display: this.user },
         { title: 'Charts', to: 'building-chart', icon: 'show_chart', isActive: false, display: this.user }
       ],
-      drawer: true,
+      drawer: null,
       mini: false,
       right: null
     }
@@ -99,8 +93,11 @@ export default {
   },
   watch: {
     isAuthenticated(value) {
-      if (!value) {
-        router.push('/')
+      // if (!value) {
+      //   router.push('/')
+      // }
+      if (value) {
+        this.drawer = false
       }
     },
     user(value) {
@@ -128,6 +125,7 @@ export default {
       router.push('#' + to)
     },
     signIn() {
+      this.drawer = false
       oauth2.oauth()
     },
     signOut() {
