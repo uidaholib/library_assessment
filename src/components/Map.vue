@@ -134,10 +134,14 @@ export default {
           esri.basemapLayer('Topographic').addTo(this.map)
           this.setFloorPlansBasemap(this.token, 19, 16, floor)
           this.setSpaceAssessmentFeatureLayer(this.token, floorLvl)
+          mapHelpers.addHeatMap(this.map, this.spaceAssessmentFeatureLayer
+            , this.calendar.dateRange, this.selectedBuilding, this.selectedFloor)
         }, 100)
       }
       else {
         this.setMapLayers(this.token, value)
+        mapHelpers.addHeatMap(this.map, this.spaceAssessmentFeatureLayer
+          , this.calendar.dateRange, this.selectedBuilding, this.selectedFloor)
       }
     },
     selectedBuilding(value) {

@@ -16,14 +16,14 @@ const scrollBehavior = (to, from, savedPosition) => {
 }
 
 const routes = [
-  // {
-  //   path: '/',
-  //   name: 'login',
-  //   component: Login,
-  // },
   {
     path: '/',
-    // path: '/home',
+    name: 'login',
+    component: Login,
+  },
+  {
+    // path: '/',
+    path: '/home',
     name: 'home',
     component: Home
     // beforeEnter: auth.requireAuth beforeEnter: auth.checkLoginStatus
