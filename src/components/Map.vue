@@ -128,19 +128,20 @@ export default {
         setTimeout(() => {
           if (!this.map) {
             this.map = L.map('map').setView(this.location, 19)
+            this.map.on('click', e => mapHelpers.removeOverlay(this.map))
           }
           const floor = (this.selectedFloor) ? (this.selectedFloor.substring(0, 3)) : '1st'
           const floorLvl = (this.selectedFloor) ? (this.selectedFloor.charAt()) : 1
           esri.basemapLayer('Topographic').addTo(this.map)
           this.setFloorPlansBasemap(this.token, 19, 16, floor)
           this.setSpaceAssessmentFeatureLayer(this.token, floorLvl)
-          mapHelpers.addHeatMap(this.map, this.spaceAssessmentFeatureLayer
+          mapHelpers.addOvelay(this.map, this.spaceAssessmentFeatureLayer
             , this.calendar.dateRange, this.selectedBuilding, this.selectedFloor)
         }, 100)
       }
       else {
         this.setMapLayers(this.token, value)
-        mapHelpers.addHeatMap(this.map, this.spaceAssessmentFeatureLayer
+        mapHelpers.addOvelay(this.map, this.spaceAssessmentFeatureLayer
           , this.calendar.dateRange, this.selectedBuilding, this.selectedFloor)
       }
     },
