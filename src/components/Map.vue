@@ -48,11 +48,11 @@
           <v-card-title v-text="dialog.title"></v-card-title>
         </v-card-row>
         <v-card-row>
-          <v-card-text class="text-xs-left" v-if="dataAvailable" v-text="dialog.text"></v-card-text>
+          <v-card-text class="text-xs-left" v-if="dialog.dataAvailable" v-text="dialog.text"></v-card-text>
           <v-card-text class="text-xs-left" v-else v-text="dialog.error"></v-card-text>
         </v-card-row>
         <v-card-row>
-          <div v-if="dataAvailable">
+          <div v-if="dialog.dataAvailable">
             <a class="btn primary white--text" href="#building-table" @click="dialog.model = false">TABLE</a>
             <a class="btn primary white--text" href="#building-chart" @click="dialog.model = false">CHART</a>
           </div>
@@ -92,7 +92,8 @@ export default {
         title: 'Area Selected',
         text: 'Visualize Data With Chart/Table',
         error: 'No data available for this selection',
-        actions: ['Chart', 'Table']
+        actions: ['Chart', 'Table'],
+        dataAvailable: false
       },
       buildings: [
         'Library',
@@ -116,6 +117,9 @@ export default {
   watch: {
     '$route'(to, from, next) {
     },
+    datatable(value) {
+      this.dataAvailable = value
+    },
     token(value) {
       this.setMapLayers(value, this.selelectedFloor)
     },
@@ -128,21 +132,20 @@ export default {
         setTimeout(() => {
           if (!this.map) {
             this.map = L.map('map').setView(this.location, 19)
-            this.map.on('click', e => mapHelpers.removeOverlay(this.map))
+            // this.map.createPane('overlay');
+            // this.map.getPane('overlay').style.zIndex = 650
           }
           const floor = (this.selectedFloor) ? (this.selectedFloor.substring(0, 3)) : '1st'
           const floorLvl = (this.selectedFloor) ? (this.selectedFloor.charAt()) : 1
           esri.basemapLayer('Topographic').addTo(this.map)
           this.setFloorPlansBasemap(this.token, 19, 16, floor)
           this.setSpaceAssessmentFeatureLayer(this.token, floorLvl)
-          mapHelpers.addOvelay(this.map, this.spaceAssessmentFeatureLayer
-            , this.calendar.dateRange, this.selectedBuilding, this.selectedFloor)
+          mapHelpers.addOverlay(this.map, this.spaceAssessmentFeatureLayer, this.selectedLayer, this.calendar.dateRange, this.selectedBuilding, this.building, this.selectedFloor, this.dialog)
         }, 100)
       }
       else {
         this.setMapLayers(this.token, value)
-        mapHelpers.addOvelay(this.map, this.spaceAssessmentFeatureLayer
-          , this.calendar.dateRange, this.selectedBuilding, this.selectedFloor)
+        mapHelpers.addOverlay(this.map, this.spaceAssessmentFeatureLayer, this.selectedLayer, this.calendar.dateRange, this.selectedBuilding, this.building, this.selectedFloor, this.dialog)
       }
     },
     selectedBuilding(value) {
@@ -174,7 +177,8 @@ export default {
       setDataTable: 'setDataTable',
       setRoomLocation: 'setRoomLocation',
       setChartData: 'setChartData',
-      setCalendar: 'setCalendar'
+      setCalendar: 'setCalendar',
+      datatable: 'getDataTable'
     }),
     navigateTo(to) {
       router.push('#' + to)
@@ -198,11 +202,13 @@ export default {
         //where: 'Floor = 1',
         token: token,
         where: 'Floor = ' + floorLvl
-      }).addTo(this.map)
+      })
+      this.spaceAssessmentFeatureLayer.pane = 'overlay'
+      this.spaceAssessmentFeatureLayer.addTo(this.map)
       this.spaceAssessmentFeatureLayer.on('click', e => {
         mapHelpers.queryRelatedField(this.map, this.selectedLayer, e, this.calendar.dateRange, this.spaceAssessmentFeatureLayer, this.building)
           .then(response => {
-            this.dataAvailable = response
+            this.dialog.dataAvailable = response
             this.dialog.model = true
             this.selectedLayer = e.layer
           })

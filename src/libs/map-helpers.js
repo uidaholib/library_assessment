@@ -44,7 +44,7 @@ function removeOverlay(map) {
   }
 }
 
-async function addOvelay(map, featureLayer, dateRange, building, floor) {
+async function addOverlay(map, featureLayer, selectedLayer, dateRange, building, buildingTitle, floor, dialog) {
   console.log('map: ', map);
   const where = "Floor = '" + floor.charAt() + "'"
   const expr = "EditDate between '" + moment(dateRange[0])
@@ -52,6 +52,7 @@ async function addOvelay(map, featureLayer, dateRange, building, floor) {
     .format() + "' AND '" + moment(dateRange[1])
     .utc()
     .format() + "'"
+  console.log('expr: ', expr);
   const getLayers = () => new Promise(resolve => {
     featureLayer
       .query()
@@ -74,7 +75,7 @@ async function addOvelay(map, featureLayer, dateRange, building, floor) {
               const numberOfUsers = data
                 .features
                 .map(item => item.properties.NUMBER_OF_USERS)
-                .reduce((x, y) => x + y)
+                .reduce((x, y) => x + y, 0)
               results.push({id: feature.id, users: numberOfUsers})
               resolve({id: feature.id, users: numberOfUsers})
             })
@@ -94,7 +95,6 @@ async function addOvelay(map, featureLayer, dateRange, building, floor) {
   const response = await getLayers()
   console.log('found: ', response);
   const users = await getUsers(response);
-  console.log('users: ', users.sort((a, b) => a.users - b.users));
   let collection = {
     crs: response.crs,
     type: response.type,
@@ -148,25 +148,34 @@ async function addOvelay(map, featureLayer, dateRange, building, floor) {
   }
   overlay = choropleth(collection, options)
   overlay.addTo(map)
+  console.log('overlay: ', overlay);
+  overlay.on('click', e => {
+    console.log('overlay clicked: ', e);
+    // map, selectedLayer, event, period, featureLayer, buildingTitle
+    queryRelatedField(map, selectedLayer, e, dateRange, featureLayer, building).then(response => {
+      console.log('response found:', response);
+      dialog.dataAvailable = response
+      dialog.model = true
+      selectedLayer = e.layer
+    })
+  })
 }
 
 function queryRelatedField(map, selectedLayer, event, period, featureLayer, buildingTitle) {
   const styles = {
     weight: 4,
-    color: 'red',
+    // color: 'red',
     dashArray: '',
-    fillOpacity: 0.3
+    // fillOpacity: 0.3
   }
   if (selectedLayer) {
     const selectedStyle = {
-      color: '#3388ff',
-      strokeOpacity: 0.5,
-      strokeWidth: 0.2,
-      strokeLinecap: 'round',
-      strokeLinejoin: 'round',
-      fill: '#3388ff',
-      fillOpacity: 0.2,
-      fillRule: 'evenodd'
+      weight: 0,
+      // color: 'red',
+      dashArray: ''
+      // color: '#3388ff', strokeOpacity: 0.5, strokeWidth: 0.2, strokeLinecap:
+      // 'round', strokeLinejoin: 'round', fill: '#3388ff', fillOpacity: 0.2,
+      // fillRule: 'evenodd'
     }
     selectedLayer.setStyle(selectedStyle)
   }
@@ -232,7 +241,7 @@ function queryRelatedField(map, selectedLayer, event, period, featureLayer, buil
 
 export default {
   queryRelatedField,
-  addOvelay,
+  addOverlay,
   removeOverlay,
   overlay
 }
