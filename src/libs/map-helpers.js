@@ -36,6 +36,8 @@ const options = {
   maintainAspectRatio: false
 }
 
+let overlay = null;
+
 function getResponse(featureLayer, where, expr, map) {
   let data
   let results = {
@@ -126,14 +128,15 @@ function getResponse(featureLayer, where, expr, map) {
   // response.crs);   console.log('final results: ', results);    const options =
   // {   valueProperty: 'NUMBER_OF_USERS', // which property in the features to
   // use   scale: [     'yellow', 'red'   ], // chroma.js scale - include as many
-  // as you like   steps: 1000, // number of breaks or steps in range   mode:
-  // 'q', // q for quantile, e for equidistant, k for k-means   style: {     //
-  // color: '#fff', // border color     weight: 2,     fillOpacity: 0.8   } } //
+  // as you like   steps: 1000, // number of breaks or steps in range   mode: 'q',
+  // // q for quantile, e for equidistant, k for k-means   style: {     // color:
+  // '#fff', // border color     weight: 2,     fillOpacity: 0.8   } } //
   // console.log('options: ', options); // choropleth(response,
   // options).addTo(map) })
 }
 
 async function addHeatMap(map, featureLayer, dateRange, building, floor) {
+  console.log('map: ', map);
   const where = "Floor = '" + floor.charAt() + "'"
   const expr = "EditDate between '" + moment(dateRange[0])
     .utc()
@@ -215,14 +218,16 @@ async function addHeatMap(map, featureLayer, dateRange, building, floor) {
         })
     })
   console.log('collection: ', collection.features[0].properties.NUMBER_OF_USERS);
-  const NUMBER_OF_USERS = collection.features.map(item => item.properties.NUMBER_OF_USERS);
+  const NUMBER_OF_USERS = collection
+    .features
+    .map(item => item.properties.NUMBER_OF_USERS);
   console.log('NUMBER OF USERS: ', NUMBER_OF_USERS);
   const std = math.std(NUMBER_OF_USERS);
   console.log('std: ', std);
   const options = {
     valueProperty: 'NUMBER_OF_USERS', // which property in the features to use
     scale: [
-      'yellow', 'red'
+      'blue', 'red'
     ], // chroma.js scale - include as many as you like
     steps: std, // number of breaks or steps in range
     mode: 'q', // q for quantile, e for equidistant, k for k-means
@@ -231,8 +236,12 @@ async function addHeatMap(map, featureLayer, dateRange, building, floor) {
       weight: 2,
       fillOpacity: 0.8
     }
-  } //
-  choropleth(collection, options).addTo(map)
+  }
+  if (overlay) {
+    map.removeLayer(overlay)
+  }
+  overlay = choropleth(collection, options)
+  overlay.addTo(map)
 }
 
 function queryRelatedField(map, selectedLayer, event, period, featureLayer, buildingTitle) {
