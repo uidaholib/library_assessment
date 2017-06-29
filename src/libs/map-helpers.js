@@ -38,6 +38,8 @@ const options = {
 
 let overlay = null;
 
+let div = null;
+
 function removeOverlay(map) {
   if (overlay) {
     map.removeLayer(overlay);
@@ -45,14 +47,12 @@ function removeOverlay(map) {
 }
 
 async function addOverlay(map, featureLayer, selectedLayer, dateRange, building, buildingTitle, floor, dialog) {
-  console.log('map: ', map);
   const where = "Floor = '" + floor.charAt() + "'"
   const expr = "EditDate between '" + moment(dateRange[0])
     .utc()
     .format() + "' AND '" + moment(dateRange[1])
     .utc()
     .format() + "'"
-  console.log('expr: ', expr);
   const getLayers = () => new Promise(resolve => {
     featureLayer
       .query()
@@ -93,7 +93,6 @@ async function addOverlay(map, featureLayer, selectedLayer, dateRange, building,
       })
   }
   const response = await getLayers()
-  console.log('found: ', response);
   const users = await getUsers(response);
   let collection = {
     crs: response.crs,
@@ -135,7 +134,7 @@ async function addOverlay(map, featureLayer, selectedLayer, dateRange, building,
     scale: [
       'blue', 'red'
     ], // chroma.js scale - include as many as you like
-    steps: std, // number of breaks or steps in range
+    steps: 10, // number of breaks or steps in range
     mode: 'q', // q for quantile, e for equidistant, k for k-means
     style: { //
       color: '#fff', // border color
@@ -148,17 +147,44 @@ async function addOverlay(map, featureLayer, selectedLayer, dateRange, building,
   }
   overlay = choropleth(collection, options)
   overlay.addTo(map)
-  console.log('overlay: ', overlay);
   overlay.on('click', e => {
-    console.log('overlay clicked: ', e);
     // map, selectedLayer, event, period, featureLayer, buildingTitle
     queryRelatedField(map, selectedLayer, e, dateRange, featureLayer, building).then(response => {
-      console.log('response found:', response);
       dialog.dataAvailable = response
       dialog.model = true
       selectedLayer = e.layer
     })
   })
+  console.log('overlay: ', overlay);
+  // Add legend (don't forget to add the CSS from index.html)
+  var legend = L.control({position: 'bottomright'})
+  legend.onAdd = function (map) {
+    if (div) {
+      L
+        .DomUtil
+        .remove(div)
+    }
+    div = L
+      .DomUtil
+      .create('div', 'info legend')
+    let limits = overlay.options.limits
+    let colors = overlay.options.colors
+    let labels = []
+
+    if (limits.every(item => item === limits[0])) {
+      labels.push('<li class="pa-0 ma-0" style="background-color: ' + colors[0] + '">' + Math.ceil(limits[0]) + '</li>')
+    } else {
+      limits
+        .forEach(function (limit, index) {
+          labels.push('<li class="pa-0 ma-0" style="background-color: ' + colors[index] + '">' + Math.ceil(limit) + '</li>')
+        })
+    }
+
+    div.innerHTML += '<div class="card pt-2 grey darken-1"><span class="pa-2 white--text">Number of Us' +
+        'ers:</span><ul class="list ma-0">' + labels.join('') + '</ul></div>'
+    return div
+  }
+  legend.addTo(map)
 }
 
 function queryRelatedField(map, selectedLayer, event, period, featureLayer, buildingTitle) {
