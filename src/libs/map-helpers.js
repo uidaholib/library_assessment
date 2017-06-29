@@ -179,11 +179,11 @@ async function addOverlay(map, featureLayer, selectedLayer, dateRange, building,
     let labels = []
 
     if (limits.every(item => item === limits[0] || isNaN(item))) {
-      labels.push('<li class="pa-0 ma-0" style="background-color: ' + colors[0] + '">' + Math.ceil(limits[0]) + '</li>')
+      labels.push('<li class="pa-0 ma-0 white--text" style="background-color: ' + colors[0] + '">' + Math.ceil(limits[0]) + '</li>')
     } else {
       limits
         .forEach(function (limit, index) {
-          labels.push('<li class="pa-0 ma-0" style="background-color: ' + colors[index] + '">' + Math.ceil(limit) + '</li>')
+          labels.push('<li class="pa-0 ma-0 white--text" style="background-color: ' + colors[index] + '">' + Math.ceil(limit) + '</li>')
         })
     }
 

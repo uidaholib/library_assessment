@@ -230,7 +230,6 @@ export default {
     applyLayers() {
       if (this.selectedFloor) {
         if (this.map === null) {
-          console.log('map is null: ', this.map);
           this.createMap()
         }
         else {
