@@ -47,7 +47,15 @@ function removeOverlay(map) {
 }
 
 async function addOverlay(map, featureLayer, selectedLayer, dateRange, building, buildingTitle, floor, dialog) {
-  const where = "Floor = '" + floor.charAt() + "'"
+  let where
+  if (floor.charAt() === '3' && building === 'College of Education') {
+    where = "SpaceID LIKE '3%1'"
+  } else if (floor.charAt() === '3' && building === 'Library') {
+    where = "SpaceID LIKE '3A'"
+  } else {
+    where = "Floor = '" + floor.charAt() + "'"
+  }
+  // const where = "Floor = '" + floor.charAt() + "'"
   const expr = "EditDate between '" + moment(dateRange[0])
     .utc()
     .format() + "' AND '" + moment(dateRange[1])
@@ -134,7 +142,7 @@ async function addOverlay(map, featureLayer, selectedLayer, dateRange, building,
     scale: [
       'blue', 'red'
     ], // chroma.js scale - include as many as you like
-    steps: 10, // number of breaks or steps in range
+    steps: await users.length, // number of breaks or steps in range
     mode: 'q', // q for quantile, e for equidistant, k for k-means
     style: { //
       color: '#fff', // border color
@@ -155,7 +163,6 @@ async function addOverlay(map, featureLayer, selectedLayer, dateRange, building,
       selectedLayer = e.layer
     })
   })
-  console.log('overlay: ', overlay);
   // Add legend (don't forget to add the CSS from index.html)
   var legend = L.control({position: 'bottomright'})
   legend.onAdd = function (map) {
@@ -171,7 +178,7 @@ async function addOverlay(map, featureLayer, selectedLayer, dateRange, building,
     let colors = overlay.options.colors
     let labels = []
 
-    if (limits.every(item => item === limits[0])) {
+    if (limits.every(item => item === limits[0] || isNaN(item))) {
       labels.push('<li class="pa-0 ma-0" style="background-color: ' + colors[0] + '">' + Math.ceil(limits[0]) + '</li>')
     } else {
       limits

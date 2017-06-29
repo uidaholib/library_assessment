@@ -127,34 +127,23 @@ export default {
       this.setMapLayers(this.token, this.selelectedFloor)
     },
     selectedFloor(value) {
-      if (!this.mapToggled) {
-        this.mapToggled = true
-        setTimeout(() => {
-          if (!this.map) {
-            this.map = L.map('map').setView(this.location, 19)
-            // this.map.createPane('overlay');
-            // this.map.getPane('overlay').style.zIndex = 650
-          }
-          const floor = (this.selectedFloor) ? (this.selectedFloor.substring(0, 3)) : '1st'
-          const floorLvl = (this.selectedFloor) ? (this.selectedFloor.charAt()) : 1
-          esri.basemapLayer('Topographic').addTo(this.map)
-          this.setFloorPlansBasemap(this.token, 19, 16, floor)
-          this.setSpaceAssessmentFeatureLayer(this.token, floorLvl)
-          mapHelpers.addOverlay(this.map, this.spaceAssessmentFeatureLayer, this.selectedLayer, this.calendar.dateRange, this.selectedBuilding, this.building, this.selectedFloor, this.dialog)
-        }, 100)
+      if (value !== '3rd Floor') {
+        // this.location = this.libraryLocation
+        this.selectedBuilding = 'Library'
       }
-      else {
-        this.setMapLayers(this.token, value)
-        mapHelpers.addOverlay(this.map, this.spaceAssessmentFeatureLayer, this.selectedLayer, this.calendar.dateRange, this.selectedBuilding, this.building, this.selectedFloor, this.dialog)
-      }
+      this.setMapView(this.location)
+      this.applyLayers()
     },
     selectedBuilding(value) {
       this.location = (value === 'Library') ? this.libraryLocation : this.collEdLocation
-      if (this.map) {
-        this.map.setView(this.location, 19)
-      }
       if (value === 'College of Education') {
         this.selectedFloor = '3rd Floor'
+      }
+      else {
+        if (this.selectedFloor) {
+          this.applyLayers()
+          this.setMapView(this.location)
+        }
       }
     }
   },
@@ -180,12 +169,37 @@ export default {
       setCalendar: 'setCalendar',
       datatable: 'getDataTable'
     }),
+    setMapView(location) {
+      if (this.map) {
+        this.map.setView(location, 19)
+      }
+    },
     navigateTo(to) {
       router.push('#' + to)
     },
     see(link) {
       this.dialog.model = false
       router.push('/home#' + link.toLowerCase())
+    },
+    createMap() {
+      this.mapToggled = true
+      if (this.map) {
+        return Promise.resolve()
+      }
+      let promise = new Promise(resolve => {
+        setTimeout(() => {
+          this.map = L.map('map').setView(this.location, 19)
+          resolve()
+        }, 500)
+      })
+      return promise.then(() => {
+        const floor = (this.selectedFloor) ? (this.selectedFloor.substring(0, 3)) : '1st'
+        const floorLvl = (this.selectedFloor) ? (this.selectedFloor.charAt()) : 1
+        esri.basemapLayer('Topographic').addTo(this.map)
+        this.setFloorPlansBasemap(this.token, 19, 16, floor)
+        this.setSpaceAssessmentFeatureLayer(this.token, floorLvl)
+        mapHelpers.addOverlay(this.map, this.spaceAssessmentFeatureLayer, this.selectedLayer, this.calendar.dateRange, this.selectedBuilding, this.building, this.selectedFloor, this.dialog)
+      })
     },
     setFloorPlansBasemap(token, maxZoom, minZoom, floor) {
       this.floorPlansBasemap = esri.tiledMapLayer({
@@ -213,6 +227,15 @@ export default {
             this.selectedLayer = e.layer
           })
       })
+    },
+    applyLayers() {
+      if (this.map === null) {
+        this.createMap()
+      }
+      else {
+        this.setMapLayers(this.token, this.selectedFloor)
+        mapHelpers.addOverlay(this.map, this.spaceAssessmentFeatureLayer, this.selectedLayer, this.calendar.dateRange, this.selectedBuilding, this.building, this.selectedFloor, this.dialog)
+      }
     },
     setMapLayers(tokenValue, floorValue) {
       const floor = (floorValue) ? floorValue.substring(0, 3) : '1st'
