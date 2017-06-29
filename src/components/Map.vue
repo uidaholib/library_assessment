@@ -128,7 +128,7 @@ export default {
     },
     selectedFloor(value) {
       if (value !== '3rd Floor') {
-        // this.location = this.libraryLocation
+        this.location = this.libraryLocation
         this.selectedBuilding = 'Library'
       }
       this.setMapView(this.location)
@@ -136,15 +136,14 @@ export default {
     },
     selectedBuilding(value) {
       this.location = (value === 'Library') ? this.libraryLocation : this.collEdLocation
+      this.setMapView(this.location)
       if (value === 'College of Education') {
         this.selectedFloor = '3rd Floor'
       }
-      else {
-        if (this.selectedFloor) {
-          this.applyLayers()
-          this.setMapView(this.location)
-        }
+      if (this.map === null) {
+        return
       }
+      this.applyLayers()
     }
   },
   computed: {
@@ -229,12 +228,15 @@ export default {
       })
     },
     applyLayers() {
-      if (this.map === null) {
-        this.createMap()
-      }
-      else {
-        this.setMapLayers(this.token, this.selectedFloor)
-        mapHelpers.addOverlay(this.map, this.spaceAssessmentFeatureLayer, this.selectedLayer, this.calendar.dateRange, this.selectedBuilding, this.building, this.selectedFloor, this.dialog)
+      if (this.selectedFloor) {
+        if (this.map === null) {
+          console.log('map is null: ', this.map);
+          this.createMap()
+        }
+        else {
+          this.setMapLayers(this.token, this.selectedFloor)
+          mapHelpers.addOverlay(this.map, this.spaceAssessmentFeatureLayer, this.selectedLayer, this.calendar.dateRange, this.selectedBuilding, this.building, this.selectedFloor, this.dialog)
+        }
       }
     },
     setMapLayers(tokenValue, floorValue) {
@@ -244,6 +246,7 @@ export default {
       this.map.removeLayer(this.spaceAssessmentFeatureLayer)
       this.setSpaceAssessmentFeatureLayer(tokenValue, floorLvl)
       this.setFloorPlansBasemap(tokenValue, 19, 16, floor)
+      this.setMapView(this.location)
     }
   },
   created() {
