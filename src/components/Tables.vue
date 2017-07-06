@@ -1,27 +1,23 @@
 <template>
-  <v-card class="mt-4" v-if="available">
+  <v-card>
     <v-card-title>
       <h5>{{tableTitle.title}}</h5>
       <v-spacer></v-spacer>
       <v-text-field append-icon="search" label="Search" single-line hide-details v-model="search"></v-text-field>
     </v-card-title>
-    <v-card-row class="pl-4">
-      <h6>{{tableTitle.subtitle}}</h6>
-    </v-card-row>
-    <v-card-row>
-      <v-data-table :headers="headers" :items="items" :search="search">
-        <template slot="headers" scope="props">
-          <span v-tooltip:bottom="{ 'html': props.item.text }">
-            {{ props.item.text }}
-          </span>
-        </template>
-        <template slot="items" scope="props">
-          <td class="text-xs-left" v-tooltip:top="{ html: toDate(props.item.date) }">{{ props.item.date | formatDate }}</td>
-          <td class="text-xs-right">{{ props.item.use }}</td>
-          <td class="text-xs-right">{{ props.item.numberOfUsers }}</td>
-        </template>
-      </v-data-table>
-    </v-card-row>
+    <v-card-text>
+      <h6 class="text-xs-left">{{tableTitle.subtitle}}</h6>
+    </v-card-text>
+    <v-data-table v-bind:headers="headers" v-bind:items="items" v-bind:search="search">
+      <template slot="items" scope="props">
+        <td class="text-xs-right" v-tooltip:right="{ html: toDate(props.item.date) }">{{ props.item.date | formatDate }}</td>
+        <td class="text-xs-right">{{ props.item.use }}</td>
+        <td class="text-xs-right">{{ props.item.numberOfUsers }}</td>
+      </template>
+      <template slot="pageText" scope="{ pageStart, pageStop }">
+        From {{ pageStart }} to {{ pageStop }}
+      </template>
+    </v-data-table>
   </v-card>
 </template>
 

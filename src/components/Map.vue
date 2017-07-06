@@ -1,65 +1,42 @@
 <template>
   <div id="app-map">
     <v-card>
-      <v-card-row class="blue-grey darken-1">
-        <v-card-title>
-          <v-icon light class="pa-1">map</v-icon>
-          <span class="white--text" v-text="title"></span>
-          <v-spacer></v-spacer>
-          <div>
-            <v-menu id="card-more" bottom left origin="top right">
-              <v-btn icon="icon" slot="activator" class="white--text">
-                <v-icon>more_vert</v-icon>
-              </v-btn>
-              <v-list>
-                <v-list-item>
-                  <v-list-tile>
-                    <v-list-tile-title>Send Feedback</v-list-tile-title>
-                  </v-list-tile>
-                </v-list-item>
-              </v-list>
-            </v-menu>
-          </div>
-        </v-card-title>
-      </v-card-row>
-      <v-card-row actions class="blue-grey darken-1">
+      <v-card-title class="blue-grey darken-1" light>
+        <v-icon dark class="pa-1">map</v-icon>
+        <span class="white--text">{{title}}</span>
+      </v-card-title>
+      <v-card-actions class="blue-grey darken-0">
         <span class="pa-1 mb-3 mr-3">
           <daterange-picker :dateRange="dateRange"></daterange-picker>
         </span>
         <v-select class="white--text mr-3" v-bind:items="buildings" v-model="selectedBuilding" label="Building" light single-line auto></v-select>
         <v-select class="white--text" v-if="selectedBuilding" v-bind:items="floors" v-model="selectedFloor" label="Floor" light single-line auto></v-select>
-      </v-card-row>
+      </v-card-actions>
       <v-card-text class="pa-0" v-show="mapToggled">
-        <v-card-row height="400px" width="100%" id="map" class="pa-0 ma-0" v-if="mapToggled">
-        </v-card-row>
-        <v-card-row height="50px" class="grey pa-1">
+        <v-card-media height="400px" width="100%" id="map" class="pa-0 ma-0" v-if="mapToggled">
+        </v-card-media>
+        <v-card-actions height="50px" class="grey pa-1">
           <span class="white--text pl-1" v-text="building"></span>
           <v-spacer></v-spacer>
           <v-btn class="indigo--text" @click.native="navigateTo('building-table')">See Data Tables</v-btn>
           <v-btn class="indigo--text" @click.native="navigateTo('building-chart')">See Charts</v-btn>
-        </v-card-row>
+        </v-card-actions>
       </v-card-text>
       <!--<v-divider></v-divider>-->
   
     </v-card>
     <v-dialog v-model="dialog.model" persistent>
       <v-card>
-        <v-card-row>
-          <v-card-title v-text="dialog.title"></v-card-title>
-        </v-card-row>
-        <v-card-row>
-          <v-card-text class="text-xs-left" v-if="dialog.dataAvailable" v-text="dialog.text"></v-card-text>
-          <v-card-text class="text-xs-left" v-else v-text="dialog.error"></v-card-text>
-        </v-card-row>
-        <v-card-row>
-          <div v-if="dialog.dataAvailable">
-            <a class="btn primary white--text" href="#building-table" @click="dialog.model = false">TABLE</a>
-            <a class="btn primary white--text" href="#building-chart" @click="dialog.model = false">CHART</a>
-          </div>
-          <div v-else>
-            <v-btn primary light @click.native="dialog.model = false">CLOSE</v-btn>
-          </div>
-        </v-card-row>
+        <v-card-title v-text="dialog.title"></v-card-title>
+        <v-card-text class="text-xs-left" v-if="dialog.dataAvailable" v-text="dialog.text"></v-card-text>
+        <v-card-text class="text-xs-left" v-else v-text="dialog.error"></v-card-text>
+        <div v-if="dialog.dataAvailable">
+          <a class="btn primary white--text" href="#building-table" @click="dialog.model = false">TABLE</a>
+          <a class="btn primary white--text" href="#building-chart" @click="dialog.model = false">CHART</a>
+        </div>
+        <div v-else>
+          <v-btn primary light @click.native="dialog.model = false">CLOSE</v-btn>
+        </div>
       </v-card>
     </v-dialog>
   </div>
@@ -106,7 +83,7 @@ export default {
         '3rd Floor',
         '4th Floor'
       ],
-      title: 'Map',
+      title: 'MAP',
       floorPlansBasemap: null,
       spaceAssessmentFeatureLayer: null,
       libraryLocation: [46.7274, -117.0144],

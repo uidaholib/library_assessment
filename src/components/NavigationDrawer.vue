@@ -1,56 +1,46 @@
 <template>
-  <v-app id="navigation-drawer">
-    <v-navigation-drawer class="grey lighten-4" temporary light :mini-variant.sync="mini" v-model="drawer">
+  <v-app id="navigation-drawer" standalone>
+    <v-navigation-drawer class="grey lighten-4" temporary light :mini-variant.sync="mini" v-model="drawer" overflow>
       <v-list class="pa-0">
-        <v-list-item v-if="user">
-          <v-list-tile avatar tag="div" ripple>
-            <v-list-tile-avatar>
-              <img v-if="(user && user.thumbnail)" :src="user.thumbnail" />
-              <v-icon v-else>account_circle</v-icon>
-            </v-list-tile-avatar>
-            <v-list-tile-content>
-              <v-list-tile-title v-text="user.fullName"></v-list-tile-title>
-            </v-list-tile-content>
-            <v-list-tile-action>
-              <v-btn icon @click.native.stop="mini = !mini">
-                <v-icon>chevron_left</v-icon>
-              </v-btn>
-            </v-list-tile-action>
-          </v-list-tile>
-        </v-list-item>
+        <v-list-tile v-if="user" avatar tag="div" ripple>
+          <v-list-tile-avatar>
+            <img v-if="(user && user.thumbnail)" :src="user.thumbnail" 0></img>
+            <v-icon v-else>account_circle</v-icon>
+          </v-list-tile-avatar>
+          <v-list-tile-content>
+            <v-list-tile-title v-text="user.fullName"></v-list-tile-title>
+          </v-list-tile-content>
+          <v-list-tile-action>
+            <v-btn icon @click.native.stop="mini = !mini">
+              <v-icon>chevron_left</v-icon>
+            </v-btn>
+          </v-list-tile-action>
+        </v-list-tile>
       </v-list>
       <v-list class="pt-0" dense>
         <v-divider></v-divider>
-        <v-list-item v-for="item in navItems" :key="item" @click="navigateTo(item.to)">
-          <v-list-tile ripple v-if="item.display">
-            <v-list-tile-action>
-              <v-icon>{{ item.icon }}</v-icon>
-            </v-list-tile-action>
-            <v-list-tile-content>
-              <v-list-tile-title>{{ item.title }}</v-list-tile-title>
-            </v-list-tile-content>
-          </v-list-tile>
-        </v-list-item>
+        <v-list-tile v-for="item in navItems" :key="item" @click="navigateTo(item.to)" ripple v-if="item.display">
+          <v-list-tile-action>
+            <v-icon>{{ item.icon }}</v-icon>
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title>{{ item.title }}</v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
       </v-list>
     </v-navigation-drawer>
-    <v-toolbar fixed class="indigo darken-4">
+    <v-toolbar class="indigo darken-4" fixed dark>
       <v-toolbar-side-icon light @click.native.stop="drawer = !drawer"></v-toolbar-side-icon>
-      <v-toolbar-title class="pa-0 ma-0">
-        <h6 class="text-xs-left white--text pt-3">{{title | uppercase}}</h6>
+      <v-toolbar-title>{{title | uppercase}}
       </v-toolbar-title>
-      <v-toolbar-items class="pa-0 ma-0">
-        <v-toolbar-item ripple v-if="user">
-          <v-btn icon light>
-            <v-icon>account_circle</v-icon>
-          </v-btn>
-          <span class="white--text">{{user.fullName.split()[0]}}</span>
-        </v-toolbar-item>
-        <v-toolbar-item ripple @click.native.stop="signIn" v-if="!isAuthenticated">
-          <v-btn icon light>
-            <v-icon>person</v-icon>
-          </v-btn>
-          <h6 class="white--text pt-3">SIGN IN</h6>
-        </v-toolbar-item>
+      <v-spacer></v-spacer>
+      <v-toolbar-items>
+        <v-btn v-if="user" flat light ripple>
+          <v-icon dark>account_circle</v-icon>{{user.fullName.split()[0]}}
+        </v-btn>
+        <v-btn flat light ripple @click.native.stop="signIn" v-if="!isAuthenticated">
+          <v-icon dark>person</v-icon>SIGN IN
+        </v-btn>
       </v-toolbar-items>
     </v-toolbar>
     <main>

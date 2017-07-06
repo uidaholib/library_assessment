@@ -1,22 +1,18 @@
 <template>
   <v-container id='login' class="px-4">
-      <v-card class="grey lighten-4 elevation-2">
-        <v-card-row>
-          <v-card-title>Login to Arcgis Online</v-card-title>
-        </v-card-row>
-        <v-card-row>
-          <v-card-text>
-            <v-container fluid>
-              <v-text-field label="Username" v-model="username" required />
-              <v-text-field label="Password" v-model="password" type="password" required />
-              <small>*indicates required field</small>
-            </v-container>
-          </v-card-text>
-        </v-card-row>
-        <v-card-row actions>
-          <v-btn class="white--text blue darken-3" raised @click.native="login">Login</v-btn>
-        </v-card-row>
-      </v-card>
+    <v-card class="grey lighten-4 elevation-2">
+      <v-card-title>Login to Arcgis Online</v-card-title>
+      <v-card-text>
+        <v-container fluid>
+          <v-text-field label="Username" v-model="username" required />
+          <v-text-field label="Password" v-model="password" type="password" required />
+          <small>*indicates required field</small>
+        </v-container>
+      </v-card-text>
+      <v-card-actions>
+        <v-btn class="white--text blue darken-3" raised @click.native="login">Login</v-btn>
+      </v-card-actions>
+    </v-card>
   </v-container>
 </template>
 
@@ -59,6 +55,5 @@ export default {
 </script>
 
 <style scoped>
-#login {
-}
+#login {}
 </style>
