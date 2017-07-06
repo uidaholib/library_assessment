@@ -188,7 +188,7 @@ async function addOverlay(map, featureLayer, selectedLayer, dateRange, building,
     }
 
     div.innerHTML += '<div class="card pt-2 grey darken-1"><span class="pa-2 white--text">Number of Us' +
-        'ers:</span><ul class="list ma-0">' + labels.join('') + '</ul></div>'
+        'ers:</span><ul class="list pa-0 ma-0">' + labels.join('') + '</ul></div>'
     return div
   }
   legend.addTo(map)

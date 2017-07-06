@@ -6,11 +6,22 @@
         <span class="white--text">{{title}}</span>
       </v-card-title>
       <v-card-actions class="blue-grey darken-0">
-        <span class="pa-1 mb-3 mr-3">
-          <daterange-picker :dateRange="dateRange"></daterange-picker>
-        </span>
-        <v-select class="white--text mr-3" v-bind:items="buildings" v-model="selectedBuilding" label="Building" light single-line auto></v-select>
-        <v-select class="white--text" v-if="selectedBuilding" v-bind:items="floors" v-model="selectedFloor" label="Floor" light single-line auto></v-select>
+        <v-container fluid>
+          <v-layout row wrap>
+            <v-flex xs12 sm6 md3 class="pt-3">
+              <daterange-picker :dateRange="dateRange"></daterange-picker>
+            </v-flex>
+            <v-flex xs12 sm6  md3 class="px-2">
+              <v-select class="white--text" prepend-icon="alarm" v-bind:items="timeScopes" v-model="timeScope" label="Time Scope" light single-line auto></v-select>
+            </v-flex>
+            <v-flex xs12 sm6 md3 class="px-2">
+              <v-select class="white--text" v-bind:items="buildings" v-model="selectedBuilding" label="Building" light single-line auto></v-select>
+            </v-flex>
+            <v-flex xs12 sm6  md3 class="px-2">
+              <v-select class="white--text" v-if="selectedBuilding" v-bind:items="floors" v-model="selectedFloor" label="Floor" light single-line auto></v-select>
+            </v-flex>
+          </v-layout>
+        </v-container>
       </v-card-actions>
       <v-card-text class="pa-0" v-show="mapToggled">
         <v-card-media height="400px" width="100%" id="map" class="pa-0 ma-0" v-if="mapToggled">
@@ -77,6 +88,12 @@ export default {
         'College of Education'
       ],
       selectedBuilding: null,
+      timeScope: null,
+      timeScopes: [
+        'All',
+        'Day time',
+        'Night time'
+      ],
       floors: [
         '1st Floor',
         '2nd Floor',
@@ -121,6 +138,33 @@ export default {
         return
       }
       this.applyLayers()
+    },
+    timeScope(value) {
+      if (this.calendar.dateRange) {
+        //  (All, Daytime (6AM – 6PM) , Nighttime (6PM – 6AM)
+        let startHour, endHour
+        switch (value) {
+          case 'All':
+            startHour = 0 //00am
+            endHour = 23 //11pm
+            break;
+          case 'Day time':
+            startHour = 6 //6am
+            endHour = 18 //6pm
+            break
+          case 'Night time':
+            startHour = 18 //6pm
+            endHour = 6 //6am
+            break
+          default:
+            break
+        }
+        const payload = [
+          moment(this.calendar.dateRange[0]).hour(startHour).minute(0).second(0).toDate(),
+          moment(this.calendar.dateRange[1]).hour(endHour).minute(0).second(0).toDate()
+        ]
+        this.setCalendar({ dateRange: payload })
+      }
     }
   },
   computed: {

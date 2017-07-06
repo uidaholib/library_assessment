@@ -31,11 +31,11 @@
     </v-navigation-drawer>
     <v-toolbar class="indigo darken-4" fixed dark>
       <v-toolbar-side-icon light @click.native.stop="drawer = !drawer"></v-toolbar-side-icon>
-      <v-toolbar-title>{{title | uppercase}}
+      <v-toolbar-title><small>{{title | uppercase}}</small>
       </v-toolbar-title>
       <v-spacer></v-spacer>
       <v-toolbar-items>
-        <v-btn v-if="user" flat light ripple>
+        <v-btn v-if="user" flat light ripple class="hidden-xs-only">
           <v-icon dark>account_circle</v-icon>{{user.fullName.split()[0]}}
         </v-btn>
         <v-btn flat light ripple @click.native.stop="signIn" v-if="!isAuthenticated">

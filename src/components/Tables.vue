@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card v-show="available">
     <v-card-title>
       <h5>{{tableTitle.title}}</h5>
       <v-spacer></v-spacer>

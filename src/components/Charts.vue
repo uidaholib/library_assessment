@@ -5,14 +5,10 @@
         <v-card-title>
           <h5>{{chartTitle.title}}</h5>
         </v-card-title>
-        <v-card-row class="pl-4">
-          <h6>{{chartTitle.subtitle}}</h6>
-        </v-card-row>
-        <v-card-row>
-          <v-card-text>
-            <bar-chart :chart-data="chartData.dataCollection"></bar-chart>
-          </v-card-text>
-        </v-card-row>
+        <h6>{{chartTitle.subtitle}}</h6>
+        <v-card-text>
+          <bar-chart :chart-data="chartData.dataCollection"></bar-chart>
+        </v-card-text>
       </v-card>
     </v-flex>
     <v-flex xs12 sm10 md8 lg6 xl6>
@@ -20,14 +16,10 @@
         <v-card-title>
           <h5>{{chartTitle.title}}</h5>
         </v-card-title>
-        <v-card-row class="pl-4">
-          <h6>{{chartTitle.subtitle}}</h6>
-        </v-card-row>
-        <v-card-row>
-          <v-card-text>
-            <line-chart :chart-data="chartData.dataCollection | truncateLabels(15)"></line-chart>
-          </v-card-text>
-        </v-card-row>
+        <h6>{{chartTitle.subtitle}}</h6>
+        <v-card-text>
+          <line-chart :chart-data="chartData.dataCollection | truncateLabels(15)"></line-chart>
+        </v-card-text>
       </v-card>
     </v-flex>
   </v-layout>

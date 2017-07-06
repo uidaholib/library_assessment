@@ -2,11 +2,7 @@
   <v-layout row wrap>
     <v-flex xs12>
       <app-map></app-map>
-    </v-flex>
-    <v-flex xs12>
       <app-table id="building-table"></app-table>
-    </v-flex>
-    <v-flex xs12>
       <app-chart id="building-chart"></app-chart>
     </v-flex>
   </v-layout>

@@ -1,5 +1,5 @@
 <template>
-  <el-date-picker v-model="rangeValue" type="datetimerange" align="left" placeholder="Date Range" :picker-options="pickerOptions" :format="format">
+  <el-date-picker class="date-range-picker" v-model="rangeValue" type="datetimerange" align="left" placeholder="Date Range" :picker-options="pickerOptions" :format="format">
   </el-date-picker>
 </template>
 
@@ -12,7 +12,7 @@ export default {
   props: ['dateRange'],
   data() {
     return {
-      format: 'yyyy/MM/dd', 
+      format: 'yyyy/MM/dd',
       pickerOptions: {
         shortcuts: [
           {
@@ -89,5 +89,7 @@ export default {
 </script>
 
 <style scoped>
-
+.date-range-picker {
+  width: 200px;
+}
 </style>
