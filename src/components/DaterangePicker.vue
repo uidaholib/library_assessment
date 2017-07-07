@@ -5,11 +5,11 @@
 
 <script>
 import moment from 'moment'
-import { mapMutations } from 'vuex'
+import { mapMutations, mapGetters } from 'vuex'
 
 
 export default {
-  props: ['dateRange'],
+  props: ['dateRange', 'timeScope'],
   data() {
     return {
       format: 'yyyy/MM/dd',
@@ -72,6 +72,11 @@ export default {
       rangeValue: ''
     };
   },
+  computed: {
+    ...mapGetters({
+      calendar: 'getCalendar'
+    })
+  },
   methods: {
     ...mapMutations({
       setCalendar: 'setCalendar'
@@ -82,9 +87,32 @@ export default {
   },
   watch: {
     rangeValue(value) {
-      this.setCalendar({ dateRange: value })
+      let startHour, endHour
+      if (this.timeScope) {
+        switch (this.timeScope) {
+          case 'All':
+            startHour = 0 //00am
+            endHour = 23 //11pm
+            break;
+          case 'Day time':
+            startHour = 6 //6am
+            endHour = 18 //6pm
+            break
+          case 'Night time':
+            startHour = 18 //6pm
+            endHour = 29 // 23 + 6 hour => 6am
+            break
+          default:
+            break
+        }
+        const payload = [startHour, endHour]
+        this.setCalendar({ dateRange: value, timeScopes: payload })
+      }
+      else {
+        this.setCalendar({ dateRange: value })
+      }
     }
-  }
+  },
 }
 </script>
 

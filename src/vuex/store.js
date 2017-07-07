@@ -41,7 +41,8 @@ const state = {
     options: {}
   },
   calendar: {
-    dateRange: null
+    dateRange: null,
+    timeScopes: null
   }
 };
 

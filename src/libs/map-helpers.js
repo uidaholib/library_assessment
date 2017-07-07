@@ -46,7 +46,7 @@ function removeOverlay(map) {
   }
 }
 
-async function addOverlay(map, featureLayer, selectedLayer, dateRange, building, buildingTitle, floor, dialog) {
+async function addOverlay(map, featureLayer, selectedLayer, dateRange, timeScopes, building, buildingTitle, floor, dialog) {
   let where
   if (floor.charAt() === '3' && building === 'College of Education') {
     where = "SpaceID LIKE '3%1'"
@@ -83,16 +83,11 @@ async function addOverlay(map, featureLayer, selectedLayer, dateRange, building,
               const items = data
                 .features
                 .filter(item => {
-                  const date = moment(item.properties.CreationDate).format()
-                  const startDate = moment(dateRange[0])
-                    .utc()
-                    .format()
-                  const endDate = moment(dateRange[1])
-                    .utc()
-                    .format()
-                  return (moment(date).hour() >= moment(startDate).hour()) && (moment(date).hour() <= moment(endDate).hour())
+                  const date = moment(item.properties.CreationDate).utc()
+                  return (parseInt(date.format('HH'), 10) >= timeScopes[0]) && (parseInt(date.format('HH'), 10) <= timeScopes[1])
                 })
-              const numberOfUsers = items.map(item => item.properties.NUMBER_OF_USERS)
+              const numberOfUsers = items
+                .map(item => item.properties.NUMBER_OF_USERS)
                 .reduce((x, y) => x + y, 0)
               results.push({id: feature.id, users: numberOfUsers})
               resolve({id: feature.id, users: numberOfUsers})
@@ -167,7 +162,7 @@ async function addOverlay(map, featureLayer, selectedLayer, dateRange, building,
   overlay.addTo(map)
   overlay.on('click', e => {
     // map, selectedLayer, event, period, featureLayer, buildingTitle
-    queryRelatedField(map, selectedLayer, e, dateRange, featureLayer, building).then(response => {
+    queryRelatedField(map, selectedLayer, e, dateRange, timeScopes, featureLayer, building).then(response => {
       dialog.dataAvailable = response
       dialog.model = true
       selectedLayer = e.layer
@@ -209,19 +204,14 @@ function addLegend(map, overlay) {
   legend.addTo(map)
 }
 
-function filterResult(items, period) {
+function filterResult(items, timeScopes) {
   return items.filter(item => {
-    const startDate = moment(period[0])
-      .utc()
-      .format()
-    const endDate = moment(period[1])
-      .utc()
-      .format()
-    return (moment(item.date).hour() >= moment(startDate).hour()) && (moment(item.date).hour() <= moment(endDate).hour())
+    const date = moment(item.date).utc()
+    return (parseInt(date.format('HH'), 10) >= timeScopes[0]) && (parseInt(date.format('HH'), 10) <= timeScopes[1])
   })
 }
 
-function queryRelatedField(map, selectedLayer, event, period, featureLayer, buildingTitle) {
+function queryRelatedField(map, selectedLayer, event, period, timeScopes, featureLayer, buildingTitle) {
   const styles = {
     weight: 4,
     // color: 'red',
@@ -267,7 +257,7 @@ function queryRelatedField(map, selectedLayer, event, period, featureLayer, buil
       .run((error, response, raw) => {
         if (response.features.length !== 0) {
           let items = tableHelpers.getItemsFromQuery(response)
-          items = filterResult(items, period)
+          items = filterResult(items, timeScopes)
           const space = tableHelpers.getRoomLocationFromQuery(response)
           const tableTitle = {
             title: buildingTitle,

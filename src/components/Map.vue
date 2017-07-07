@@ -9,15 +9,15 @@
         <v-container fluid>
           <v-layout row wrap>
             <v-flex xs12 sm6 md3 class="pt-3">
-              <daterange-picker :dateRange="dateRange"></daterange-picker>
+              <daterange-picker :dateRange="dateRange" :timeScope="timeScope"></daterange-picker>
             </v-flex>
-            <v-flex xs12 sm6  md3 class="px-2">
+            <v-flex xs12 sm6 md3 class="px-2">
               <v-select class="white--text" prepend-icon="alarm" v-bind:items="timeScopes" v-model="timeScope" label="Time Scope" light single-line auto></v-select>
             </v-flex>
             <v-flex xs12 sm6 md3 class="px-2">
               <v-select class="white--text" v-bind:items="buildings" v-model="selectedBuilding" label="Building" light single-line auto></v-select>
             </v-flex>
-            <v-flex xs12 sm6  md3 class="px-2">
+            <v-flex xs12 sm6 md3 class="px-2">
               <v-select class="white--text" v-if="selectedBuilding" v-bind:items="floors" v-model="selectedFloor" label="Floor" light single-line auto></v-select>
             </v-flex>
           </v-layout>
@@ -140,33 +140,10 @@ export default {
       this.applyLayers()
     },
     timeScope(value) {
-      if (this.calendar.dateRange) {
-        //  (All, Daytime (6AM – 6PM) , Nighttime (6PM – 6AM)
-        let startHour, endHour
-        switch (value) {
-          case 'All':
-            startHour = 0 //00am
-            endHour = 23 //11pm
-            break;
-          case 'Day time':
-            startHour = 6 //6am
-            endHour = 18 //6pm
-            break
-          case 'Night time':
-            startHour = 18 //6pm
-            endHour = 29 // 23 + 6 hour => 6am
-            break
-          default:
-            break
-        }
-        const payload = [
-          moment(this.calendar.dateRange[0]).hour(startHour).minute(0).second(0).toDate(),
-          moment(this.calendar.dateRange[1]).hour(endHour).minute(0).second(0).toDate()
-        ]
-        this.setCalendar({ dateRange: payload })
-        this.setMapView(this.location)
-        this.applyLayers()
-      }
+      const payload = this.toTimeScope(value)
+      this.setCalendar({ timeScopes: payload })
+      this.setMapView(this.location)
+      this.applyLayers()
     }
   },
   computed: {
@@ -191,6 +168,26 @@ export default {
       setCalendar: 'setCalendar',
       datatable: 'getDataTable'
     }),
+    toTimeScope(value) {
+      let startHour, endHour
+      switch (value) {
+        case 'All':
+          startHour = 0 //00am
+          endHour = 23 //11pm
+          break;
+        case 'Day time':
+          startHour = 6 //6am
+          endHour = 18 //6pm
+          break
+        case 'Night time':
+          startHour = 18 //6pm
+          endHour = 29 // 23 + 6 hour => 6am
+          break
+        default:
+          break
+      }
+      return [startHour, endHour]
+    },
     setMapView(location) {
       if (this.map) {
         this.map.setView(location, 19)
@@ -220,7 +217,7 @@ export default {
         esri.basemapLayer('Topographic').addTo(this.map)
         this.setFloorPlansBasemap(this.token, 19, 16, floor)
         this.setSpaceAssessmentFeatureLayer(this.token, floorLvl)
-        mapHelpers.addOverlay(this.map, this.spaceAssessmentFeatureLayer, this.selectedLayer, this.calendar.dateRange, this.selectedBuilding, this.building, this.selectedFloor, this.dialog)
+        mapHelpers.addOverlay(this.map, this.spaceAssessmentFeatureLayer, this.selectedLayer, this.calendar.dateRange, this.calendar.timeScopes, this.selectedBuilding, this.building, this.selectedFloor, this.dialog)
       })
     },
     setFloorPlansBasemap(token, maxZoom, minZoom, floor) {
@@ -242,7 +239,7 @@ export default {
       this.spaceAssessmentFeatureLayer.pane = 'overlay'
       this.spaceAssessmentFeatureLayer.addTo(this.map)
       this.spaceAssessmentFeatureLayer.on('click', e => {
-        mapHelpers.queryRelatedField(this.map, this.selectedLayer, e, this.calendar.dateRange, this.spaceAssessmentFeatureLayer, this.building)
+        mapHelpers.queryRelatedField(this.map, this.selectedLayer, e, this.calendar.dateRange, this.calendar.timeScopes, this.spaceAssessmentFeatureLayer, this.building)
           .then(response => {
             this.dialog.dataAvailable = response
             this.dialog.model = true
@@ -257,7 +254,7 @@ export default {
         }
         else {
           this.setMapLayers(this.token, this.selectedFloor)
-          mapHelpers.addOverlay(this.map, this.spaceAssessmentFeatureLayer, this.selectedLayer, this.calendar.dateRange, this.selectedBuilding, this.building, this.selectedFloor, this.dialog)
+          mapHelpers.addOverlay(this.map, this.spaceAssessmentFeatureLayer, this.selectedLayer, this.calendar.dateRange, this.calendar.timeScopes, this.selectedBuilding, this.building, this.selectedFloor, this.dialog)
         }
       }
     },
