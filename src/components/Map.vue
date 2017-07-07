@@ -90,9 +90,9 @@ export default {
       selectedBuilding: null,
       timeScope: null,
       timeScopes: [
-        'All',
-        'Day time',
-        'Night time'
+        'All Hours',
+        'Day (6AM-6PM)',
+        'Night (6PM-6AM)'
       ],
       floors: [
         '1st Floor',
@@ -171,15 +171,18 @@ export default {
     toTimeScope(value) {
       let startHour, endHour
       switch (value) {
-        case 'All':
+        //  'All Hours',
+        // 'Day (6AM-6PM)',
+        // 'Night (6PM-6AM)'
+        case 'All Hours':
           startHour = 0 //00am
           endHour = 23 //11pm
           break;
-        case 'Day time':
+        case 'Day (6AM-6PM)':
           startHour = 6 //6am
-          endHour = 18 //6pm
+          endHour = 17 //5:59pm -> 6pm
           break
-        case 'Night time':
+        case 'Night (6PM-6AM)':
           startHour = 18 //6pm
           endHour = 29 // 23 + 6 hour => 6am
           break

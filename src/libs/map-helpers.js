@@ -84,7 +84,9 @@ async function addOverlay(map, featureLayer, selectedLayer, dateRange, timeScope
                 .features
                 .filter(item => {
                   const date = moment(item.properties.CreationDate).utc()
-                  return (parseInt(date.format('HH'), 10) >= timeScopes[0]) && (parseInt(date.format('HH'), 10) <= timeScopes[1])
+                  return filterRule(timeScopes)(date)
+                  // return (parseInt(date.format('HH'), 10) >= timeScopes[0]) &&
+                  // (parseInt(date.format('HH'), 10) <= timeScopes[1])
                 })
               const numberOfUsers = items
                 .map(item => item.properties.NUMBER_OF_USERS)
@@ -207,8 +209,37 @@ function addLegend(map, overlay) {
 function filterResult(items, timeScopes) {
   return items.filter(item => {
     const date = moment(item.date).utc()
-    return (parseInt(date.format('HH'), 10) >= timeScopes[0]) && (parseInt(date.format('HH'), 10) <= timeScopes[1])
+    return filterRule(timeScopes)(date)
+    // return (parseInt(date.format('HH'), 10) >= timeScopes[0]) &&
+    // (parseInt(date.format('HH'), 10) <= timeScopes[1])
   })
+}
+
+function filterRule(timeScopes) {
+  /*
+   case 'All Hours':
+      startHour = 0 //00am
+      endHour = 23 //11pm
+      break;
+    case 'Day (6AM-6PM)':
+      startHour = 6 //6am
+      endHour = 17 //5:59pm -> 6pm
+      break
+    case 'Night (6PM-6AM)':
+      startHour = 18 //6pm
+      endHour = 29 // 23 + 6 hour => 6am
+  */
+  let rule
+  if (timeScopes[0] === 18 && timeScopes[1] === 29) {
+    rule = (date) => {
+      return ((parseInt(date.format('HH'), 10) <= 6) || (parseInt(date.format('HH'), 10) >= 18))
+    }
+  } else {
+    rule = (date) => {
+      return ((parseInt(date.format('HH'), 10) >= timeScopes[0]) && (parseInt(date.format('HH'), 10) <= timeScopes[1]))
+    }
+  }
+  return rule
 }
 
 function queryRelatedField(map, selectedLayer, event, period, timeScopes, featureLayer, buildingTitle) {

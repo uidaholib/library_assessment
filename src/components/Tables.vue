@@ -53,14 +53,14 @@ export default {
   },
   methods: {
     toDate(value) {
-      return moment(value).utc().format('ddd, MMM Do YYYY, h:mm a')
+      return moment(value).utc().format('ddd, MMM Do YYYY, h:mm A')
     }
   },
   mounted() {
   },
   filters: {
     formatDate(value) {
-      return moment(value).format('MM/DD/YYYY')
+      return moment(value).utc().format('MM/DD/YYYY h:mm A')
     }
   }
 }
