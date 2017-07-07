@@ -45,8 +45,6 @@ export default {
   },
   created() {
     this.user = this.getUser
-    console.log('authenticated!', this.isAuthenticated)
-    console.log('user: ', this.user)
   },
   components: {
     'app-map': Map,

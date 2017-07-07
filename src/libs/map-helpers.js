@@ -80,7 +80,6 @@ async function addOverlay(map, featureLayer, selectedLayer, dateRange, building,
             .relationshipId('0')
             .definitionExpression(expr)
             .run((errorMsg, data, rawData) => {
-              console.log('data: ', data);
               const items = data
                 .features
                 .filter(item => {
@@ -269,7 +268,6 @@ function queryRelatedField(map, selectedLayer, event, period, featureLayer, buil
         if (response.features.length !== 0) {
           let items = tableHelpers.getItemsFromQuery(response)
           items = filterResult(items, period)
-          console.log('items: ', items);
           const space = tableHelpers.getRoomLocationFromQuery(response)
           const tableTitle = {
             title: buildingTitle,
@@ -283,7 +281,6 @@ function queryRelatedField(map, selectedLayer, event, period, featureLayer, buil
               filters.push({name: b.use, field: 'use', value: 'numberOfUsers'})
             })
           const dataCollection = chartHelpers.toChartData(items, filters, label, backgroundColor)
-          console.log('objects: ', aggregated, filter, dataCollection, space, tableTitle);
           store.commit('setChartData', {dataCollection, options})
           store.commit('setDataTable', {tableTitle, headers, items})
           resolve(true)

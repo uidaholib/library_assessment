@@ -141,7 +141,6 @@ export default {
     },
     timeScope(value) {
       if (this.calendar.dateRange) {
-        console.log('set time scope: ', value);
         //  (All, Daytime (6AM – 6PM) , Nighttime (6PM – 6AM)
         let startHour, endHour
         switch (value) {
