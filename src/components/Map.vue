@@ -165,6 +165,8 @@ export default {
           moment(this.calendar.dateRange[1]).hour(endHour).minute(0).second(0).toDate()
         ]
         this.setCalendar({ dateRange: payload })
+        this.setMapView(this.location)
+        this.applyLayers()
       }
     }
   },
