@@ -80,9 +80,20 @@ async function addOverlay(map, featureLayer, selectedLayer, dateRange, building,
             .relationshipId('0')
             .definitionExpression(expr)
             .run((errorMsg, data, rawData) => {
-              const numberOfUsers = data
+              console.log('data: ', data);
+              const items = data
                 .features
-                .map(item => item.properties.NUMBER_OF_USERS)
+                .filter(item => {
+                  const date = moment(item.properties.CreationDate).format()
+                  const startDate = moment(dateRange[0])
+                    .utc()
+                    .format()
+                  const endDate = moment(dateRange[1])
+                    .utc()
+                    .format()
+                  return (moment(date).hour() >= moment(startDate).hour()) && (moment(date).hour() <= moment(endDate).hour())
+                })
+              const numberOfUsers = items.map(item => item.properties.NUMBER_OF_USERS)
                 .reduce((x, y) => x + y, 0)
               results.push({id: feature.id, users: numberOfUsers})
               resolve({id: feature.id, users: numberOfUsers})
@@ -164,6 +175,11 @@ async function addOverlay(map, featureLayer, selectedLayer, dateRange, building,
     })
   })
   // Add legend (don't forget to add the CSS from index.html)
+  addLegend(map, overlay)
+}
+
+function addLegend(map, overlay) {
+  // Add legend (don't forget to add the CSS from index.html)
   var legend = L.control({position: 'bottomright'})
   legend.onAdd = function (map) {
     if (div) {
@@ -192,6 +208,18 @@ async function addOverlay(map, featureLayer, selectedLayer, dateRange, building,
     return div
   }
   legend.addTo(map)
+}
+
+function filterResult(items, period) {
+  return items.filter(item => {
+    const startDate = moment(period[0])
+      .utc()
+      .format()
+    const endDate = moment(period[1])
+      .utc()
+      .format()
+    return (moment(item.date).hour() >= moment(startDate).hour()) && (moment(item.date).hour() <= moment(endDate).hour())
+  })
 }
 
 function queryRelatedField(map, selectedLayer, event, period, featureLayer, buildingTitle) {
@@ -239,7 +267,9 @@ function queryRelatedField(map, selectedLayer, event, period, featureLayer, buil
       .definitionExpression(expr)
       .run((error, response, raw) => {
         if (response.features.length !== 0) {
-          const items = tableHelpers.getItemsFromQuery(response)
+          let items = tableHelpers.getItemsFromQuery(response)
+          items = filterResult(items, period)
+          console.log('items: ', items);
           const space = tableHelpers.getRoomLocationFromQuery(response)
           const tableTitle = {
             title: buildingTitle,
@@ -253,6 +283,7 @@ function queryRelatedField(map, selectedLayer, event, period, featureLayer, buil
               filters.push({name: b.use, field: 'use', value: 'numberOfUsers'})
             })
           const dataCollection = chartHelpers.toChartData(items, filters, label, backgroundColor)
+          console.log('objects: ', aggregated, filter, dataCollection, space, tableTitle);
           store.commit('setChartData', {dataCollection, options})
           store.commit('setDataTable', {tableTitle, headers, items})
           resolve(true)
